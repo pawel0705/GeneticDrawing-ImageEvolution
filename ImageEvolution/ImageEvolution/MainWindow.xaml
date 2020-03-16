@@ -1,0 +1,16 @@
+﻿<Window x:Class="ImageEvolution.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:ImageEvolution"
+        mc:Ignorable="d"
+        Title="MainWindow" Height="450" Width="800">
+    <Grid>
+        <Image HorizontalAlignment="Left" Height="227" Margin="82,54,0,0" VerticalAlignment="Top" Width="208"/>
+        <Image HorizontalAlignment="Left" Height="227" Margin="464,54,0,0" VerticalAlignment="Top" Width="208"/>
+        <Button Content="Wstaw obraz" HorizontalAlignment="Left" Margin="130,313,0,0" VerticalAlignment="Top"/>
+        <Button Content="Generuj obraz" HorizontalAlignment="Left" Margin="532,313,0,0" VerticalAlignment="Top"/>
+
+    </Grid>
+</Window>
