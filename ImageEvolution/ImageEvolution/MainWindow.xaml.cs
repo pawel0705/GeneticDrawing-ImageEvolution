@@ -23,7 +23,8 @@ namespace ImageEvolution
     /// </summary>
     public partial class MainWindow : Window
     {
-        Bitmap b;
+        Bitmap firstImage, secondImage;
+        ImageComparator imageComparator;
 
         public MainWindow()
         {
@@ -32,6 +33,11 @@ namespace ImageEvolution
 
         private void Button_Click(object sender, RoutedEventArgs e)
         {
+
+
+            secondImage = new Bitmap(ImageOpener.ReadImageFromFile());
+            this.geneticImage.Source = Bitmap2BitmapImage(secondImage);
+            /*
             b = new Bitmap(1, 1);
             b.SetPixel(0, 0, System.Drawing.Color.Red);
             var result = new Bitmap(b, 1024, 1024);
@@ -39,20 +45,14 @@ namespace ImageEvolution
             b = result;
 
             this.wynik.Source = Bitmap2BitmapImage(result);
-        }
-
-        private BitmapSource Bitmap2BitmapImage(Bitmap bitmap)
-        {
-            BitmapSource i = Imaging.CreateBitmapSourceFromHBitmap(
-                           bitmap.GetHbitmap(),
-                           IntPtr.Zero,
-                           Int32Rect.Empty,
-                           BitmapSizeOptions.FromEmptyOptions());
-            return i;
+            */
         }
 
         private void Button_Click_1(object sender, RoutedEventArgs e)
         {
+            firstImage = new Bitmap(ImageOpener.ReadImageFromFile());
+            this.originalImage.Source = Bitmap2BitmapImage(firstImage);
+            /*
             Graphics g = Graphics.FromImage(b);
 
             PointF po1 = new PointF(270f, 130f);
@@ -65,6 +65,30 @@ namespace ImageEvolution
             g.FillPolygon(brush, test);
             g.Dispose();
             this.wynik.Source = Bitmap2BitmapImage(b);
+            */
         }
+
+        private void Button_Click_2(object sender, RoutedEventArgs e)
+        {
+            imageComparator = new ImageComparator(firstImage.Height, firstImage.Height);
+
+          porownanie.Content = imageComparator.CompareImages(firstImage, secondImage);
+
+
+
+        }
+
+        private BitmapSource Bitmap2BitmapImage(Bitmap bitmap)
+        {
+
+            BitmapSource i = Imaging.CreateBitmapSourceFromHBitmap(
+                           bitmap.GetHbitmap(),
+                           IntPtr.Zero,
+                           Int32Rect.Empty,
+                           BitmapSizeOptions.FromEmptyOptions());
+            return i;
+        }
+
+        
     }
 }

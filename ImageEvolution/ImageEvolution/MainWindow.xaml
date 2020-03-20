@@ -7,10 +7,14 @@
         mc:Ignorable="d"
         Title="MainWindow" Height="450" Width="800">
     <Grid>
-        <Image HorizontalAlignment="Left" Height="227" Margin="82,54,0,0" VerticalAlignment="Top" Width="208"/>
-        <Image Name="wynik" HorizontalAlignment="Left" Height="227" Margin="464,54,0,0" VerticalAlignment="Top" Width="208"/>
+        <Image Name="originalImage" HorizontalAlignment="Left" Height="227" Margin="82,54,0,0" VerticalAlignment="Top" Width="208"/>
+        <Image Name="geneticImage" HorizontalAlignment="Left" Height="227" Margin="464,54,0,0" VerticalAlignment="Top" Width="208"/>
         <Button Content="Wstaw obraz" HorizontalAlignment="Left" Margin="130,313,0,0" VerticalAlignment="Top" Click="Button_Click_1"/>
         <Button Content="Generuj obraz" HorizontalAlignment="Left" Margin="532,313,0,0" VerticalAlignment="Top" Click="Button_Click"/>
+        <Button Content="Compare" HorizontalAlignment="Left" Margin="338,381,0,0" VerticalAlignment="Top" Click="Button_Click_2"/>
+        <Label Name="porownanie" HorizontalAlignment="Left" Margin="364,333,0,0" VerticalAlignment="Top">
+            <Label Content="Label"/>
+        </Label>
 
     </Grid>
 </Window>
