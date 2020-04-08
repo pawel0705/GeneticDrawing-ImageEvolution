@@ -7,14 +7,16 @@
         mc:Ignorable="d"
         Title="MainWindow" Height="450" Width="800">
     <Grid>
-        <Image Name="originalImage" HorizontalAlignment="Left" Height="227" Margin="82,54,0,0" VerticalAlignment="Top" Width="208"/>
-        <Image Name="geneticImage" HorizontalAlignment="Left" Height="227" Margin="464,54,0,0" VerticalAlignment="Top" Width="208"/>
-        <Button Content="Wstaw obraz" HorizontalAlignment="Left" Margin="130,313,0,0" VerticalAlignment="Top" Click="Button_Click_1"/>
-        <Button Content="Generuj obraz" HorizontalAlignment="Left" Margin="532,313,0,0" VerticalAlignment="Top" Click="Button_Click"/>
-        <Button Content="Compare" HorizontalAlignment="Left" Margin="338,381,0,0" VerticalAlignment="Top" Click="Button_Click_2"/>
-        <Label Name="porownanie" HorizontalAlignment="Left" Margin="364,333,0,0" VerticalAlignment="Top">
+        <Image Name="originalImage" HorizontalAlignment="Left" Height="227" Margin="10,10,0,0" VerticalAlignment="Top" Width="208"/>
+        <Image Name="bestGeneticImage" HorizontalAlignment="Left" Height="227" Margin="266,10,0,0" VerticalAlignment="Top" Width="208"/>
+        <Image x:Name="actualGeneticImage" HorizontalAlignment="Left" Height="227" Margin="521,10,0,0" VerticalAlignment="Top" Width="208"/>
+        <Button Content="Instert image" HorizontalAlignment="Left" Margin="45,323,0,0" VerticalAlignment="Top" Click="InsertOriginalImage"/>
+        <Button Content="Generate" HorizontalAlignment="Left" Margin="148,323,0,0" VerticalAlignment="Top" Click="Button_Click"/>
+        <Label Name="fitness" HorizontalAlignment="Left" Margin="364,333,0,0" VerticalAlignment="Top">
             <Label Content="Label"/>
         </Label>
+        <Label Name="generation" Content="Label" HorizontalAlignment="Left" Margin="369,374,0,0" VerticalAlignment="Top"/>
+        <Label Name="mutations" Content="Label" HorizontalAlignment="Left" Margin="369,302,0,0" VerticalAlignment="Top"/>
 
     </Grid>
 </Window>
