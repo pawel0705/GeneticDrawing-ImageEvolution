@@ -8,6 +8,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Threading;
 using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Documents;
@@ -29,7 +30,9 @@ namespace ImageEvolution
     {
         Bitmap originalBitmap;
         EvolutionFitness evolutionFitness;
-        Community community;
+        GenerationCycle community;
+        bool initialized = false;
+        Individual drawing;
 
         private System.Drawing.Color[,] sourceColours;
 
@@ -37,23 +40,50 @@ namespace ImageEvolution
         {
             InitializeComponent();
 
-            community = new Community();
+            community = new GenerationCycle();
+            drawing = new Individual();
+
+            this.community.IndividualCreated += this.EventIndividualFinished;
         }
 
         private void Button_Click(object sender, RoutedEventArgs e)
         {
-            ImageDNA drawing = new ImageDNA();
-            drawing.Initialize();
+            if (initialized == false)
+            {
+                community.InitializeEvolution(sourceColours);
+                initialized = true;
+            }
 
-            var backBuffer = new Bitmap(originalBitmap.Width, originalBitmap.Height);
+            new Thread(() =>
+            {
+                Thread.CurrentThread.IsBackground = true;
 
-            Graphics g = Graphics.FromImage(backBuffer);
+                while(true)
+                {
+                    drawing = community.Generate();
+                }
 
-            ImageRenderer.DrawImage(drawing, g);
-            this.bestGeneticImage.Source = Bitmap2BitmapImage(backBuffer);
+            }).Start();
 
-            this.fitness.Content = evolutionFitness.CompareImages(drawing, sourceColours).ToString();
+          
+        }
 
+        public void EventIndividualFinished(object sender, IndividualEventArgs e)
+        {
+            Dispatcher.Invoke(delegate
+            {
+                using (var backBuffer = new Bitmap(originalBitmap.Width, originalBitmap.Height))
+                {
+                    using (Graphics g = Graphics.FromImage(backBuffer))
+                    {
+                        ImageRenderer.DrawImage(drawing, g);
+                        this.bestGeneticImage.Source = Bitmap2BitmapImage(backBuffer);
+
+                        this.fitness.Content = drawing.Adaptation.ToString() + "%";
+                    }
+
+                }
+            });
         }
 
         private void OriginalImageColours()
@@ -62,7 +92,7 @@ namespace ImageEvolution
 
             for (int i = 0; i < originalBitmap.Width; i++)
             {
-                for(int j = 0; j < originalBitmap.Height; j++)
+                for (int j = 0; j < originalBitmap.Height; j++)
                 {
                     var color = originalBitmap.GetPixel(i, j);
                     sourceColours[i, j] = color;
@@ -83,7 +113,7 @@ namespace ImageEvolution
                 evolutionFitness = new EvolutionFitness(originalBitmap.Width, originalBitmap.Height);
                 AlgorithmSettings.ImageWidth = originalBitmap.Width;
                 AlgorithmSettings.ImageHeight = originalBitmap.Height;
-            }   
+            }
         }
     }
 }

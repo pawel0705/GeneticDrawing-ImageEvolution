@@ -1,15 +1,17 @@
-﻿using ImageEvolution.Model.Genetic.DNA;
+﻿using ImageEvolution.Model.Genetic.Evolution;
 using System;
 using System.Collections.Generic;
+using ImageEvolution.Model.Genetic.Chromosome;
 using System.Drawing;
 
 using System.Text;
+using ImageEvolution.Model.Genetic.DNA;
 
 namespace ImageEvolution.Model.Utils
 {
     public static class ImageRenderer
     {
-        public static void DrawImage(ImageDNA image, Graphics graphics)
+        public static void DrawImage(Individual image, Graphics graphics)
         {
             graphics.Clear(Color.White);
 
@@ -19,11 +21,13 @@ namespace ImageEvolution.Model.Utils
             }
         }
 
-        private static void DrawShape(ShapeDNA shape, Graphics graphics)
+        private static void DrawShape(ShapeChromosome shape, Graphics graphics)
         {
-            using Brush brush = GetSolidColour(shape.ColourShape);
-            Point[] points = GetGdiPoints(shape.PositionsShape);
-            graphics.FillPolygon(brush, points);
+            using (Brush brush = GetSolidColour(shape.ColourShape))
+            {
+                Point[] points = GetGdiPoints(shape.PositionsShape);
+                graphics.FillPolygon(brush, points);
+            }
         }
 
         private static Point[] GetGdiPoints(IList<PositionDNA> points)

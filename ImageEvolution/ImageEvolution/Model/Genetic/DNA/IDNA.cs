@@ -6,7 +6,13 @@ namespace ImageEvolution.Model.Genetic.DNA
 {
     public interface IDNA
     {
-        public void Initialize();
+        public void InitializeDNA();
+
+        public void SoftMutation();
+        public void MediumMutation();
+        public void HardMutation();
+        public void GaussianMutation();
+
         public IDNA CloneDNA();
     }
 }

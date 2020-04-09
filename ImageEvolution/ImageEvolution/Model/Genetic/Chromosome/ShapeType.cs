@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace ImageEvolution.Model.Genetic.DNA
+namespace ImageEvolution.Model.Genetic.Chromosome
 {
     public enum ShapeType
     { 

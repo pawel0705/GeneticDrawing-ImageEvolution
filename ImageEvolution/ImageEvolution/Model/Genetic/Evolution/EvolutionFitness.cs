@@ -4,16 +4,16 @@ using System.Drawing;
 using System.Drawing.Imaging;
 using System.Text;
 
-using ImageEvolution.Model.Genetic.DNA;
+using ImageEvolution.Model.Genetic.Evolution;
 using ImageEvolution.Model.Utils;
 
 namespace ImageEvolution
 {
     class EvolutionFitness
     {
-        private int _imageWidth;
-        private int _imageHeight;
-        private double _dMax;
+        private readonly int _imageWidth;
+        private readonly int _imageHeight;
+        private readonly double _dMax;
 
         public EvolutionFitness(int imageWidth, int imageHeight)
         {
@@ -24,11 +24,11 @@ namespace ImageEvolution
         }
 
         // TODO getpixel jest wolne, zamienc pozniej na lockbity
-        public double CompareImages(ImageDNA individual, Color[,] originalColours)
+        public unsafe void CompareImages(Individual individual, Color[,] originalColours)
         {
             double d = 0;
 
-            using (var bit = new Bitmap(_imageWidth, _imageHeight, PixelFormat.Format24bppRgb))
+            using (Bitmap bit = new Bitmap(_imageWidth, _imageHeight, PixelFormat.Format24bppRgb))
             {
                 using (Graphics graphics = Graphics.FromImage(bit))
                 {
@@ -36,32 +36,38 @@ namespace ImageEvolution
 
                     BitmapData bitmapData = bit.LockBits(new Rectangle(0, 0, _imageWidth, _imageHeight), ImageLockMode.ReadOnly, PixelFormat.Format24bppRgb);
 
+                    byte bytesPerPixel = 3;
 
-                    for (int i = 0; i < _imageWidth; i++)
+                    byte* scan0 = (byte*)bitmapData.Scan0.ToPointer();
+                    int stride = bitmapData.Stride;
+
+                    for (int j = 0; j < _imageHeight; j++)
                     {
-                        for (int j = 0; j < _imageHeight; j++)
-                        {
-                            byte oRed = originalColours[i, j].R;
-                            byte oGreen = originalColours[i,j].G;
-                            byte oBlue = originalColours[i,j].B;
+                        byte* row = scan0 + (j * stride);
 
-                            byte gRed = GetPixel(bitmapData, i, j).R;
-                            byte gGreen = GetPixel(bitmapData, i, j).G;
-                            byte gBlue = GetPixel(bitmapData, i, j).B;
+                        for (int i = 0; i < _imageWidth; i++)
+                        {
+                            int bIndex = i * bytesPerPixel;
+                            int gIndex = bIndex + 1;
+                            int rIndex = bIndex + 2;
+
+                            byte oRed = originalColours[i, j].R;
+                            byte oGreen = originalColours[i, j].G;
+                            byte oBlue = originalColours[i, j].B;
+
+                            byte gRed = row[rIndex];
+                            byte gGreen = row[gIndex];
+                            byte gBlue = row[bIndex];
 
                             d += Math.Sqrt(Math.Pow(oRed - gRed, 2) + Math.Pow(oGreen - gGreen, 2) + Math.Pow(oBlue - gBlue, 2));
                         }
                     }
+
+                   bit.UnlockBits(bitmapData);
                 }
             }
 
-            return (_dMax - d) / _dMax;
-        }
-
-        private static unsafe Color GetPixel(BitmapData bmd, int x, int y)
-        {
-            byte* p = (byte*)bmd.Scan0 + y * bmd.Stride + 3 * x;
-            return Color.FromArgb(p[2], p[1], p[0]);
+            individual.Adaptation = (_dMax - d) / _dMax * 100;
         }
     }
 }

@@ -10,6 +10,13 @@ namespace ImageEvolution.Model.Settings
 
         public static byte RandomColour(byte min, byte max)
         {
+            if(min > max)
+            {
+                var tmp = min;
+                min = max;
+                max = tmp;
+            }
+
             return (byte)_random.Next(min, max);
         }
 
@@ -18,7 +25,12 @@ namespace ImageEvolution.Model.Settings
             return _random.Next(from, to);
         }
 
-        public static int RandomNumber()
+        public static int RandomIntervalIntegerInclusive(int from, int to)
+        {
+            return _random.Next(from, to + 1);
+        }
+
+        public static int RandomIntegerNumber()
         {
             return _random.Next();
         }
