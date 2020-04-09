@@ -10,12 +10,29 @@ namespace ImageEvolution.Model.Genetic.Evolution
     public class Individual
     {
         public double Adaptation { get; set; }
+        
+        public int Generation { get; set; }
 
         public List<ShapeChromosome> Shapes { get; set; }
 
         public Individual()
         {
             Shapes = new List<ShapeChromosome>();
+        }
+
+        public Individual CloneIndividual()
+        {
+            var individual = new Individual();
+            individual.Shapes = new List<ShapeChromosome>();
+            individual.Adaptation = Adaptation;
+            individual.Generation = Generation;
+
+            foreach(var shape in Shapes)
+            {
+                individual.Shapes.Add(shape.CloneShapeChromosome());
+            }
+
+            return individual;
         }
 
         public void Initialize()

@@ -4,10 +4,12 @@ using ImageEvolution.Model.Utils;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Drawing.Imaging;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
+
 using System.Threading;
 using System.Windows.Controls;
 using System.Windows.Data;
@@ -20,6 +22,7 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 
 using static ImageEvolution.ImageOpener;
+using System.Windows.Threading;
 
 namespace ImageEvolution
 {
@@ -29,10 +32,13 @@ namespace ImageEvolution
     public partial class MainWindow : Window
     {
         Bitmap originalBitmap;
+        Bitmap geneticBitmap;
+
         EvolutionFitness evolutionFitness;
         GenerationCycle community;
         bool initialized = false;
         Individual drawing;
+        Individual gui;
 
         private System.Drawing.Color[,] sourceColours;
 
@@ -43,8 +49,49 @@ namespace ImageEvolution
             community = new GenerationCycle();
             drawing = new Individual();
 
-            this.community.IndividualCreated += this.EventIndividualFinished;
+            DispatcherTimer timer = new DispatcherTimer();
+            timer.Interval = TimeSpan.FromMilliseconds(250);
+            timer.Tick += timer_Tick;
+            timer.Start();
+
+            // this.community.IndividualCreated += this.EventIndividualFinished;
         }
+
+        private void timer_Tick(object sender, EventArgs e)
+        {
+
+            lock (drawing)
+            {
+                gui = drawing.CloneIndividual();
+            }
+
+            if (gui == null)
+                return;
+
+            if (originalBitmap == null)
+                return;
+
+
+            this.bestGeneticImage.Source = null;
+
+            using (var bit = new Bitmap(originalBitmap.Width, originalBitmap.Height))
+            {
+                Graphics g = Graphics.FromImage(bit);
+                g.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.HighQuality;
+
+                ImageRenderer.DrawImage(gui, g);
+
+                this.bestGeneticImage.Source = Bitmap2BitmapImage(bit);
+            }
+
+
+
+            this.generation.Content = gui.Generation.ToString();
+
+            this.fitness.Content = gui.Adaptation.ToString() + "%";
+
+        }
+
 
         private void Button_Click(object sender, RoutedEventArgs e)
         {
@@ -54,18 +101,21 @@ namespace ImageEvolution
                 initialized = true;
             }
 
+            this.GenerateButton.IsEnabled = false;
+
             new Thread(() =>
             {
                 Thread.CurrentThread.IsBackground = true;
+                Thread.CurrentThread.Priority = ThreadPriority.AboveNormal;
 
-                while(true)
+                while (true)
                 {
                     drawing = community.Generate();
                 }
 
             }).Start();
 
-          
+
         }
 
         public void EventIndividualFinished(object sender, IndividualEventArgs e)
@@ -77,9 +127,7 @@ namespace ImageEvolution
                     using (Graphics g = Graphics.FromImage(backBuffer))
                     {
                         ImageRenderer.DrawImage(drawing, g);
-                        this.bestGeneticImage.Source = Bitmap2BitmapImage(backBuffer);
 
-                        this.fitness.Content = drawing.Adaptation.ToString() + "%";
                     }
 
                 }

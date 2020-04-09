@@ -25,6 +25,8 @@ namespace ImageEvolution.Model.Genetic.Evolution
 
         private EvolutionFitness _evolutionFitness;
 
+        private int _generation = 0;
+
         public void InitializeEvolution(Color[,] sourceIndividual)
         {
             _populationIndividuals = new Individual[AlgorithmSettings.Population];
@@ -34,27 +36,41 @@ namespace ImageEvolution.Model.Genetic.Evolution
 
             _evolutionFitness = new EvolutionFitness(Utils.AlgorithmSettings.ImageWidth, Utils.AlgorithmSettings.ImageHeight);
 
+            Individual individual;
+
             for (int i = 0; i < AlgorithmSettings.Population; i++)
             {
-                var individual = new Individual();
+                individual = new Individual();
                 individual.Initialize();
-                _evolutionFitness.CompareImages(individual, _destinationIndividual);
 
                 _populationIndividuals[i] = individual;
             }
+
         }
 
 
         public Individual Generate()
         {
+            _generation++;
+
             for (int j = 0; j < AlgorithmSettings.Population; j++)
             {
+                _populationIndividuals[j].Generation = _generation;
                 _evolutionFitness.CompareImages(_populationIndividuals[j], _destinationIndividual);
             }
 
-            Individual[] sortedGeneration = _populationIndividuals.OrderByDescending(i => i.Adaptation).ToArray();
+            Individual[] sortedGeneration = new Individual[AlgorithmSettings.Population];
+            for(int j = 0; j < AlgorithmSettings.Population; j++)
+            {
+                sortedGeneration[j] = _populationIndividuals[j].CloneIndividual();
+            }
 
-            Array.Copy(sortedGeneration, 0, _eliteIndividuals, 0, AlgorithmSettings.Elite);
+            sortedGeneration = sortedGeneration.OrderByDescending(i => i.Adaptation).ToArray();
+
+            for(int j = 0; j < AlgorithmSettings.Elite; j++)
+            {
+                _eliteIndividuals[j] = sortedGeneration[j];
+            }
 
             int i = 0;
             int mother = 0;
@@ -81,6 +97,19 @@ namespace ImageEvolution.Model.Genetic.Evolution
                 {
                     break;
                 }
+            }
+
+            if(_generation > 350)
+            {
+                AlgorithmSettings.MutationChance = 50;
+            }
+            if(_generation > 700)
+            {
+                AlgorithmSettings.MutationChance = 100;
+            }
+            if(_generation > 1000)
+            {
+                AlgorithmSettings.MutationChance = 200;
             }
 
             EventIndividualFinished(_eliteIndividuals[0]);
