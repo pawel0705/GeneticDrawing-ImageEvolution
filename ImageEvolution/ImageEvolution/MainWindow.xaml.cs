@@ -23,6 +23,7 @@ using System.Windows.Shapes;
 
 using static ImageEvolution.ImageOpener;
 using System.Windows.Threading;
+using System.IO;
 
 namespace ImageEvolution
 {
@@ -31,137 +32,53 @@ namespace ImageEvolution
     /// </summary>
     public partial class MainWindow : Window
     {
-        Bitmap originalBitmap;
-        Bitmap geneticBitmap;
 
-        EvolutionFitness evolutionFitness;
-        GenerationCycle community;
-        bool initialized = false;
-        Individual drawing;
-        Individual gui;
-
-        private System.Drawing.Color[,] sourceColours;
 
         public MainWindow()
         {
             InitializeComponent();
 
-            community = new GenerationCycle();
-            drawing = new Individual();
-
-            DispatcherTimer timer = new DispatcherTimer();
-            timer.Interval = TimeSpan.FromMilliseconds(250);
-            timer.Tick += timer_Tick;
-            timer.Start();
-
-            // this.community.IndividualCreated += this.EventIndividualFinished;
-        }
-
-        private void timer_Tick(object sender, EventArgs e)
-        {
-
-            lock (drawing)
-            {
-                gui = drawing.CloneIndividual();
-            }
-
-            if (gui == null)
-                return;
-
-            if (originalBitmap == null)
-                return;
-
-
-            this.bestGeneticImage.Source = null;
-
-            using (var bit = new Bitmap(originalBitmap.Width, originalBitmap.Height))
-            {
-                Graphics g = Graphics.FromImage(bit);
-                g.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.HighQuality;
-
-                ImageRenderer.DrawImage(gui, g);
-
-                this.bestGeneticImage.Source = Bitmap2BitmapImage(bit);
-            }
-
-
-
-            this.generation.Content = gui.Generation.ToString();
-
-            this.fitness.Content = gui.Adaptation.ToString() + "%";
 
         }
 
 
-        private void Button_Click(object sender, RoutedEventArgs e)
+
+        private void MoveCursorMenu(int index)
         {
-            if (initialized == false)
-            {
-                community.InitializeEvolution(sourceColours);
-                initialized = true;
-            }
-
-            this.GenerateButton.IsEnabled = false;
-
-            new Thread(() =>
-            {
-                Thread.CurrentThread.IsBackground = true;
-                Thread.CurrentThread.Priority = ThreadPriority.AboveNormal;
-
-                while (true)
-                {
-                    drawing = community.Generate();
-                }
-
-            }).Start();
-
-
+            TrainsitionigContentSlide.OnApplyTemplate();
+            GridCursor.Margin = new Thickness(0, (50 + (60 * index)), 0, 0);
         }
 
-        public void EventIndividualFinished(object sender, IndividualEventArgs e)
+        private void Grid_MouseDown(object sender, MouseButtonEventArgs e)
         {
-            Dispatcher.Invoke(delegate
-            {
-                using (var backBuffer = new Bitmap(originalBitmap.Width, originalBitmap.Height))
-                {
-                    using (Graphics g = Graphics.FromImage(backBuffer))
-                    {
-                        ImageRenderer.DrawImage(drawing, g);
-
-                    }
-
-                }
-            });
+            DragMove();
         }
 
-        private void OriginalImageColours()
+        private void ListViewMenu_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            sourceColours = new System.Drawing.Color[originalBitmap.Width, originalBitmap.Height];
+            int index = ListViewMenu.SelectedIndex;
+            MoveCursorMenu(index);
 
-            for (int i = 0; i < originalBitmap.Width; i++)
+            switch (index)
             {
-                for (int j = 0; j < originalBitmap.Height; j++)
-                {
-                    var color = originalBitmap.GetPixel(i, j);
-                    sourceColours[i, j] = color;
-                }
+                case 0:
+                    
+                    GridWindow.Children.Clear();
+                    GridWindow.Children.Add(new EvolutionWindow());
+                    break;
+                default:
+                    break;
             }
         }
 
-        private void InsertOriginalImage(object sender, RoutedEventArgs e)
+        private void Button_Click_1(object sender, RoutedEventArgs e)
         {
-            String originalImagePath = ImageOpener.ReadImageFromFile(FileFilter.IMAGE);
+            Application.Current.Shutdown();
+        }
 
-            if (originalImagePath != String.Empty)
-            {
-                originalBitmap = new Bitmap(originalImagePath);
-                this.originalImage.Source = ImageOpener.Bitmap2BitmapImage(originalBitmap);
-                OriginalImageColours();
-
-                evolutionFitness = new EvolutionFitness(originalBitmap.Width, originalBitmap.Height);
-                AlgorithmSettings.ImageWidth = originalBitmap.Width;
-                AlgorithmSettings.ImageHeight = originalBitmap.Height;
-            }
+        private void Button_Click_2(object sender, RoutedEventArgs e)
+        {
+            Application.Current.MainWindow.WindowState = WindowState.Minimized;
         }
     }
 }

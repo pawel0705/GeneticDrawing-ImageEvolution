@@ -1,0 +1,41 @@
+﻿<UserControl x:Class="ImageEvolution.EvolutionWindow"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:ImageEvolution"
+             xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+             mc:Ignorable="d" 
+             Height="auto" Width="auto">
+    <Grid>
+        <materialDesign:TransitioningContent x:Name="TrainsitionigContentSlide" OpeningEffect="{materialDesign:TransitionEffect SlideInFromLeft, Duration=0:0:0.8}">
+            <Grid>
+                <StackPanel Orientation="Horizontal">
+                    <GroupBox Header="Original image" Width="auto" Height="auto" Margin="0,0,0,167">
+                        <Image Name="originalImage" Width="200" Height="200"></Image>
+                    </GroupBox>
+                    <GroupBox Header="Best of all individual" Width="auto" Height="auto" Margin="0,0,0,167">
+                        <Image Name="bestGeneticImage" Width="200" Height="200" />
+                    </GroupBox>
+                    <GroupBox Header="Top individual from generation" Width="auto" Height="auto" Margin="0,0,0,167">
+                        <Image Name="actualGeneticImage" Width="200" Height="200"/>
+                    </GroupBox>
+                </StackPanel>
+
+
+                <Button Content="Instert image" Width="120" HorizontalAlignment="Left" Margin="13,343,0,0" VerticalAlignment="Top" Click="InsertOriginalImage"/>
+                <Button Content="Generate" Name="GenerateButton" Width="120" HorizontalAlignment="Left" Margin="13,292,0,0" VerticalAlignment="Top" Click="Button_Click"/>
+                <Button Content="Stop" Name="StopButton" Width="120" HorizontalAlignment="Left" Margin="157,292,0,0" VerticalAlignment="Top" Click="Button_Click"/>
+
+                <StackPanel Orientation="Vertical" Margin="450,300,0,0">
+                    <Label Foreground="Purple" Name="elapsedTime"  Content ="Elapsed time: 0:00" Margin="0,0,0,0"/>
+                    <Label Foreground="Purple" Name="generation" Content="Generation: 0" HorizontalAlignment="Left" Margin="0,0,0,0"/>
+                    <Label Foreground="Purple" Name="bestFitness" Content="Best fitness: 0%" HorizontalAlignment="Left" Margin="0,0,0,0"/>
+                    <Label Foreground="Purple" Name="currentFitness" Content="Current fitness: 0%" HorizontalAlignment="Left" Margin="0,0,0,0"/>
+                </StackPanel>
+                
+
+            </Grid>
+        </materialDesign:TransitioningContent>
+    </Grid>
+</UserControl>

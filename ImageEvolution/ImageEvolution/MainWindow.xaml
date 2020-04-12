@@ -4,19 +4,42 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:ImageEvolution"
+        xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800">
-    <Grid>
-        <Image Name="originalImage" HorizontalAlignment="Left" Height="227" Margin="10,10,0,0" VerticalAlignment="Top" Width="208"/>
-        <Image Name="bestGeneticImage" HorizontalAlignment="Left" Height="227" Margin="266,10,0,0" VerticalAlignment="Top" Width="208"/>
-        <Image x:Name="actualGeneticImage" HorizontalAlignment="Left" Height="227" Margin="521,10,0,0" VerticalAlignment="Top" Width="208"/>
-        <Button Content="Instert image" HorizontalAlignment="Left" Margin="45,323,0,0" VerticalAlignment="Top" Click="InsertOriginalImage"/>
-        <Button Name="GenerateButton" Content="Generate" HorizontalAlignment="Left" Margin="148,323,0,0" VerticalAlignment="Top" Click="Button_Click"/>
-        <Label Name="fitness" HorizontalAlignment="Left" Margin="364,333,0,0" VerticalAlignment="Top">
-            <Label Content="Label"/>
-        </Label>
-        <Label Name="generation" Content="Label" HorizontalAlignment="Left" Margin="369,374,0,0" VerticalAlignment="Top"/>
-        <Label Name="mutations" Content="Label" HorizontalAlignment="Left" Margin="369,302,0,0" VerticalAlignment="Top"/>
+        Title="Image Evolution" Height="600" Width="800" WindowStyle ="None" WindowStartupLocation="CenterScreen" ResizeMode="NoResize" Background="Black">
+    <Grid Background="WhiteSmoke" MouseDown="Grid_MouseDown">
+        <StackPanel>
+            <Grid Background="DarkMagenta" Height="10"/>
+            <Grid Margin="5">
+                <StackPanel HorizontalAlignment="Right" Orientation="Horizontal">
+                    <TextBlock Text="Image evolution - genetic algorithm" VerticalAlignment="Center" FontSize="20" FontFamily="Champagne &amp; Limousines" Margin="20 0"/>
+                    <Button Width="30" Height="30" Background = "{x:Null}" BorderBrush = "{x:Null}" Padding="0" Foreground="Gray" Click="Button_Click_2">
+                        <materialDesign:PackIcon Kind="WindowMinimize"></materialDesign:PackIcon>
+                    </Button>
+                    <Button Width="30" Height="30" Background = "{x:Null}" BorderBrush = "{x:Null}" Padding="0" Foreground="Gray" Click="Button_Click_1">
+                        <materialDesign:PackIcon Kind="Close"></materialDesign:PackIcon>
+                    </Button>
+                </StackPanel>
+            </Grid>
+        </StackPanel>
 
+        <Grid Margin="120 55 0 0">
+            <Grid x:Name="GridWindow" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+        </Grid>
+        
+        <Grid Width="100" Margin="0 10 0 0" HorizontalAlignment="Left" Background="DarkMagenta">
+            <materialDesign:TransitioningContent x:Name="TrainsitionigContentSlide" OpeningEffect="{materialDesign:TransitionEffect SlideInFromLeft, Duration=0:0:0.2}">
+                <Grid x:Name="GridCursor" Margin="0 50 0 0" Background= "White" Width="10" HorizontalAlignment="Left" Height="60" VerticalAlignment="Top"/>
+            </materialDesign:TransitioningContent>
+            <ListView x:Name="ListViewMenu" Margin="0 50" Foreground="White" FontFamily="Champagne &amp; Limousines" FontSize="18" SelectionChanged="ListViewMenu_SelectionChanged" SelectedIndex="0">
+                <ListViewItem Height="60">
+                    <StackPanel Orientation="Horizontal">
+                        <materialDesign:PackIcon Kind="Home" Width="50" Height="50" VerticalAlignment="Center" Margin="5 5 0 0"/>
+
+                    </StackPanel>
+                </ListViewItem>
+            </ListView>
+
+        </Grid>
     </Grid>
 </Window>
