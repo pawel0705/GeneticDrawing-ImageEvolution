@@ -62,6 +62,14 @@ namespace ImageEvolution
             InitializeObjects();
             InitializeTimers();
             InitializeButtons();
+            InitializeSliders();
+        }
+
+        private void InitializeSliders()
+        {
+            PopulationAmountSlider.Value = 50;
+            EliteAmountSlider.Value = 10;
+            ShapesAmountSlider.Value = 100;
         }
 
         private void InitializeObjects()
@@ -343,6 +351,26 @@ namespace ImageEvolution
         private void CheckBoxPentagon(object sender, RoutedEventArgs e)
         {
            
+        }
+
+        private void ShapesAmountSlider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
+        {
+            AlgorithmSettings.ShapesAmount = (int)ShapesAmountSlider.Value;
+        }
+
+        private void PopulationAmountSlider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
+        {
+            AlgorithmSettings.Population = (int)PopulationAmountSlider.Value;
+        }
+
+        private void EliteAmountSlider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
+        {
+            AlgorithmSettings.Elite = (int)(AlgorithmSettings.Population * (EliteAmountSlider.Value / 100.0f));
+
+            if(AlgorithmSettings.Elite == 0)
+            {
+                AlgorithmSettings.Elite = 1;
+            }
         }
     }
 }

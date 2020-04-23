@@ -7,6 +7,8 @@
              xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
              mc:Ignorable="d" 
              FontFamily ="Verdana"
+             FontSize="15"
+             Foreground="Purple"
              Height="auto" Width="auto">
     <Grid>
         <materialDesign:TransitioningContent x:Name="TrainsitionigContentSlide" OpeningEffect="{materialDesign:TransitionEffect SlideInFromLeft, Duration=0:0:0.8}">
@@ -26,9 +28,9 @@
 
 
 
-                <Button Content="Instert image" Name="InsertImageButton" Width="120" HorizontalAlignment="Left" Margin="13,343,0,0" VerticalAlignment="Top" Click="InsertOriginalImage"/>
-                <Button Content="Generate" Name="GenerateButton" Width="120" HorizontalAlignment="Left" Margin="13,292,0,0" VerticalAlignment="Top" Click="Button_Click"/>
-                <Button Content="Stop" Name="StopButton" Width="120" HorizontalAlignment="Left" Margin="157,292,0,0" VerticalAlignment="Top" Click="StopButtonClicki"/>
+                <Button Content="Instert image" Name="InsertImageButton" Width="130" HorizontalAlignment="Left" Margin="13,278,0,0" VerticalAlignment="Top" Click="InsertOriginalImage"/>
+                <Button Content="Generate" Name="GenerateButton" Width="130" HorizontalAlignment="Left" Margin="13,318,0,0" VerticalAlignment="Top" Click="Button_Click"/>
+                <Button Content="Stop" Name="StopButton" Width="130" HorizontalAlignment="Left" Margin="13,364,0,0" VerticalAlignment="Top" Click="StopButtonClicki"/>
 
                 <StackPanel Orientation="Vertical" HorizontalAlignment="Left"  Margin="500,290,0,0">
                     <Label FontSize="15" Foreground="Purple" Name="elapsedTime"  Content ="Elapsed time: 0:00"/>
@@ -37,13 +39,33 @@
                     <Label FontSize="15" Foreground="Purple" Name="currentFitness" Content="Current fitness: 0%"/>
                 </StackPanel>
 
-                <StackPanel Orientation="Vertical" HorizontalAlignment="Left"  VerticalAlignment="Top" Margin="300,300,200,0">
+                <StackPanel Orientation="Vertical" HorizontalAlignment="Left"  VerticalAlignment="Top" Margin="148,278,0,0">
+                    <DockPanel VerticalAlignment="Center" Margin="10">
+                        <TextBox Text="{Binding ElementName=ShapesAmountSlider, Path=Value, UpdateSourceTrigger=PropertyChanged}" DockPanel.Dock="Right" TextAlignment="Right" Width="40" />
+                        <Slider Name="ShapesAmountSlider" Maximum="250"  TickFrequency="1" IsSnapToTickEnabled="True" Width="150" ValueChanged="ShapesAmountSlider_ValueChanged"/>
+                    </DockPanel>
+
+                    <DockPanel VerticalAlignment="Center" Margin="10">
+                        <TextBox Text="{Binding ElementName=PopulationAmountSlider, Path=Value, UpdateSourceTrigger=PropertyChanged}" DockPanel.Dock="Right" TextAlignment="Right" Width="40" />
+                        <Slider Name="PopulationAmountSlider" Maximum="100"  TickFrequency="1" IsSnapToTickEnabled="True" Width="150" ValueChanged="PopulationAmountSlider_ValueChanged"/>
+                    </DockPanel>
+
+                    <DockPanel VerticalAlignment="Center" Margin="10">
+
+                        <Slider Name="EliteAmountSlider" Maximum="100"  TickFrequency="1" IsSnapToTickEnabled="True" Width="150" ValueChanged="EliteAmountSlider_ValueChanged"/>
+                        <TextBlock>
+                        <TextBox Text="{Binding ElementName=EliteAmountSlider, Path=Value, UpdateSourceTrigger=PropertyChanged}" DockPanel.Dock="Right" TextAlignment="Right" Width="40" />
+                                                %</TextBlock>
+                    </DockPanel>
+
+                </StackPanel>
+
+                <StackPanel Orientation="Vertical"  HorizontalAlignment="Left"  Margin="385,290,0,10">
                     <CheckBox Name="circleCheckBox" FontSize="15" Foreground="Purple" Content="Circle"  Checked="CheckBoxCircle"/>
                     <CheckBox Name="triangleCheckBox" FontSize="15" Foreground="Purple" Content="Triangle"  Checked="CheckBoxTriangle"/>
                     <CheckBox Name="rectangleCheckBox" FontSize="15" Foreground="Purple" Content="Rectangle"  Checked="CheckBoxRectangle"/>
                     <CheckBox Name="PentagonCheckBox" FontSize="15" Foreground="Purple" Content="Pentagon"  Checked="CheckBoxPentagon"/>
                 </StackPanel>
-                
 
 
             </Grid>

@@ -6,7 +6,7 @@
         xmlns:local="clr-namespace:ImageEvolution"
         xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
         mc:Ignorable="d"
-        Title="Image Evolution" Height="600" Width="800" WindowStyle ="None" WindowStartupLocation="CenterScreen" ResizeMode="NoResize" Background="Black">
+        Title="Image Evolution" Height="600" Width="1000" WindowStyle ="None" WindowStartupLocation="CenterScreen" ResizeMode="NoResize" Background="Black">
     <Grid Background="WhiteSmoke" MouseDown="Grid_MouseDown">
         <StackPanel>
             <Grid Background="DarkMagenta" Height="10"/>

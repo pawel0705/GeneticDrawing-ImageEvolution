@@ -11,16 +11,18 @@ namespace ImageEvolution.Model.Genetic.Evolution
     public class Individual
     {
         public double Adaptation { get; set; }
-        
+
         public int Generation { get; set; }
 
         public List<ShapeChromosome> TriangleShapes { get; set; }
         public List<ShapeChromosome> SquareShapes { get; set; }
+        public List<ShapeChromosome> ElipseShapes { get; set; }
 
         public Individual()
         {
             TriangleShapes = new List<ShapeChromosome>();
             SquareShapes = new List<ShapeChromosome>();
+            ElipseShapes = new List<ShapeChromosome>();
         }
 
         public Individual CloneIndividual()
@@ -28,6 +30,7 @@ namespace ImageEvolution.Model.Genetic.Evolution
             var individual = new Individual();
             individual.TriangleShapes = new List<ShapeChromosome>();
             individual.SquareShapes = new List<ShapeChromosome>();
+            individual.ElipseShapes = new List<ShapeChromosome>();
 
             individual.Adaptation = Adaptation;
             individual.Generation = Generation;
@@ -40,6 +43,11 @@ namespace ImageEvolution.Model.Genetic.Evolution
             foreach (var shape in SquareShapes)
             {
                 individual.SquareShapes.Add(shape.CloneShapeChromosome());
+            }
+
+            foreach (var shape in ElipseShapes)
+            {
+                individual.ElipseShapes.Add(shape.CloneShapeChromosome());
             }
 
             return individual;
@@ -89,6 +97,9 @@ namespace ImageEvolution.Model.Genetic.Evolution
                     break;
                 case ShapeType.SQUARE:
                     SquareShapes.Add(shape);
+                    break;
+                case ShapeType.CIRCLE:
+                    ElipseShapes.Add(shape);
                     break;
             }
         }

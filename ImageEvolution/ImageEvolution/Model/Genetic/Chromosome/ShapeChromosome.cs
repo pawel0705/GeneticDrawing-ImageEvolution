@@ -11,6 +11,7 @@ namespace ImageEvolution.Model.Genetic.Chromosome
     public class ShapeChromosome
     {
         public ColourDNA ColourShape { get; set; }
+
         public List<PositionDNA> PositionsShape { get; set; }
 
         private ShapeType _shapeType = ShapeType.VOID;
@@ -89,6 +90,21 @@ namespace ImageEvolution.Model.Genetic.Chromosome
                 position3.PositionY = position2.PositionY;
                 PositionsShape.Add(position3);
             }
+            else if(_shapeType == ShapeType.CIRCLE)
+            {
+                var pivotPoint = new PositionDNA();
+                pivotPoint.InitializeDNA();
+
+                PositionsShape.Add(pivotPoint);
+
+                var position = new PositionDNA();
+                position.PositionX = 10;
+                position.PositionY = 10;
+
+                position.SoftMutation();
+
+                PositionsShape.Add(position);
+            }
         }
 
         public void MutateChromosome(MutationType mutationType)
@@ -146,6 +162,13 @@ namespace ImageEvolution.Model.Genetic.Chromosome
 
         }
 
+        private void MutateElipseShapePosition()
+        {
+            var positionSize = RandomMutation.RandomIntervalIntegerInclusive(0, PositionsShape.Count - 1);
+
+            PositionsShape[positionSize].SoftMutation();
+        }
+
         private void MutatePosition()
         {
             switch (_shapeType)
@@ -155,6 +178,9 @@ namespace ImageEvolution.Model.Genetic.Chromosome
                     break;
                 case ShapeType.SQUARE:
                     MutateSquareShapePosition();
+                    break;
+                case ShapeType.CIRCLE:
+                    MutateElipseShapePosition();
                     break;
             }
 

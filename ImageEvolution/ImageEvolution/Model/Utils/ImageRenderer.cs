@@ -15,15 +15,44 @@ namespace ImageEvolution.Model.Utils
         {
             graphics.Clear(Color.White);
 
-            foreach(var shape in image.TriangleShapes)
+            var maxIterator = image.SquareShapes.Count + 
+                image.ElipseShapes.Count + image.TriangleShapes.Count;
+
+            for(int i = 0; i < maxIterator; i++)
             {
-                DrawShape(shape, graphics);
+
+                if(image.SquareShapes.Count > i)
+                {
+                    DrawShape(image.SquareShapes[i], graphics);
+                }
+
+                if(image.ElipseShapes.Count > i)
+                {
+                    DrawElipse(image.ElipseShapes[i], graphics);
+                }
+
+                if(image.TriangleShapes.Count > i)
+                {
+                    DrawShape(image.TriangleShapes[i], graphics);
+                }
+
+                if(image.TriangleShapes.Count < i &&
+                    image.ElipseShapes.Count < i &&
+                    image.SquareShapes.Count < i)
+                {
+                    break;
+                }
+            }
+        }
+
+        private static void DrawElipse(ShapeChromosome shape, Graphics graphics)
+        {
+            using (Brush brush = GetSolidColour(shape.ColourShape))
+            {
+                Point[] points = GetGdiPoints(shape.PositionsShape);
+                graphics.FillEllipse(brush, points[0].X, points[0].Y, points[1].X, points[1].Y);
             }
 
-            foreach (var shape in image.SquareShapes)
-            {
-                DrawShape(shape, graphics);
-            }
         }
 
         private static void DrawShape(ShapeChromosome shape, Graphics graphics)

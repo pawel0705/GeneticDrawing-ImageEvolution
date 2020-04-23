@@ -159,6 +159,25 @@ namespace ImageEvolution.Model.Genetic.Evolution
                 }
             }
 
+            // elipse shapes
+            for (int i = 0; i < mother.ElipseShapes.Count; i++)
+            {
+                if (RandomMutation.RandomIntervalIntegerInclusive(0, 1) == 0)
+                {
+                    individualChild.ElipseShapes.Add(mother.ElipseShapes[i]);
+                }
+                else
+                {
+                    individualChild.ElipseShapes.Add(father.ElipseShapes[i]);
+                }
+
+                if (RandomMutation.RandomIntervalIntegerInclusive(0, AlgorithmSettings.MutationChance) == 1)
+                {
+                    individualChild.ElipseShapes[i].MutateChromosome(MutationType.SOFT);
+                }
+            }
+
+
 
             return individualChild;
         }
