@@ -27,21 +27,12 @@ using System.IO;
 
 namespace ImageEvolution
 {
-    /// <summary>
-    /// Interaction logic for MainWindow.xaml
-    /// </summary>
     public partial class MainWindow : Window
     {
-
-
         public MainWindow()
         {
             InitializeComponent();
-
-
         }
-
-
 
         private void MoveCursorMenu(int index)
         {
@@ -62,7 +53,6 @@ namespace ImageEvolution
             switch (index)
             {
                 case 0:
-                    
                     GridWindow.Children.Clear();
                     GridWindow.Children.Add(new EvolutionWindow());
                     break;

@@ -9,7 +9,7 @@ namespace ImageEvolution.Model.Genetic.Chromosome
         VOID = 0,
         CIRCLE = 1,
         TRIANGLE = 2,
-        RECTANGLE = 3,
-        POLYGON = 4
+        SQUARE = 3,
+        PENTAGON = 4
     }
 }

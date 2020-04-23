@@ -122,23 +122,43 @@ namespace ImageEvolution.Model.Genetic.Evolution
         {
             var individualChild = new Individual();
 
-            for (int i = 0; i < mother.Shapes.Count; i++)
+
+            // triangle shapes
+            for (int i = 0; i < mother.TriangleShapes.Count; i++)
             {
                 if (RandomMutation.RandomIntervalIntegerInclusive(0, 1) == 0)
                 {
-                    individualChild.Shapes.Add(mother.Shapes[i]);
+                    individualChild.TriangleShapes.Add(mother.TriangleShapes[i]);
                 }
                 else
                 {
-                    individualChild.Shapes.Add(father.Shapes[i]);
+                    individualChild.TriangleShapes.Add(father.TriangleShapes[i]);
                 }
 
                 if(RandomMutation.RandomIntervalIntegerInclusive(0, AlgorithmSettings.MutationChance) == 1)
                 {
-                    individualChild.Shapes[i].MutateChromosome(MutationType.SOFT);
+                    individualChild.TriangleShapes[i].MutateChromosome(MutationType.SOFT);
+                }
+            }
+
+            // square shapes
+            for (int i = 0; i < mother.SquareShapes.Count; i++)
+            {
+                if (RandomMutation.RandomIntervalIntegerInclusive(0, 1) == 0)
+                {
+                    individualChild.SquareShapes.Add(mother.SquareShapes[i]);
+                }
+                else
+                {
+                    individualChild.SquareShapes.Add(father.SquareShapes[i]);
                 }
 
+                if (RandomMutation.RandomIntervalIntegerInclusive(0, AlgorithmSettings.MutationChance) == 1)
+                {
+                    individualChild.SquareShapes[i].MutateChromosome(MutationType.SOFT);
+                }
             }
+
 
             return individualChild;
         }

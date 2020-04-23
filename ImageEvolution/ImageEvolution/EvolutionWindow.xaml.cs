@@ -32,57 +32,128 @@ namespace ImageEvolution
         private Bitmap _originalBitmap;
         private GenerationCycle _community;
 
-        bool initialized = false;
+        private bool _generateButtonLock = false;
+        private bool _insertImageButtonLock = false;
+        private bool _stopButtonLock = false;
 
-        Individual drawing;
-        Individual gui;
+        private bool _newBestIndividual = false;
+        private bool _evolutionInitialized = false;
 
-        private System.Drawing.Color[,] sourceColours;/// 
+        private int _milisecondsTime = 10;
+        private int _seconds = 0;
+        private int _minutes = 0;
+
+        private Individual _tmpIndividual;
+        private Individual _topGenerationIndividual;
+        private Individual _bestOfAllIndividual;
+
+        private System.Drawing.Color[,] sourceColours;
+
+        private DispatcherTimer _refreshImagesTimer;
+        private DispatcherTimer _timeTimer;
+
+        private Thread _generationThread;
 
         public EvolutionWindow()
         {
             InitializeComponent();
 
-            _community = new GenerationCycle();
-            drawing = new Individual();
-
-            DispatcherTimer timer = new DispatcherTimer();
-            timer.Interval = TimeSpan.FromMilliseconds(1000);
-            timer.Tick += timer_Tick;
-            timer.Start();
-
             // this.community.IndividualCreated += this.EventIndividualFinished;
+            InitializeObjects();
+            InitializeTimers();
+            InitializeButtons();
         }
 
-        private void timer_Tick(object sender, EventArgs e)
+        private void InitializeObjects()
         {
+            _community = new GenerationCycle();
+            _tmpIndividual = new Individual();
+        }
 
-            lock (drawing)
+        private void InitializeTimers()
+        {
+            _refreshImagesTimer = new DispatcherTimer();
+            _refreshImagesTimer.Interval = TimeSpan.FromMilliseconds(_milisecondsTime);
+            _refreshImagesTimer.Tick += ShowDataImages;
+            _refreshImagesTimer.Start();
+
+            _timeTimer = new DispatcherTimer();
+            _timeTimer.Interval = TimeSpan.FromSeconds(1);
+            _timeTimer.Tick += UpdateTime;
+        }
+
+        private void InitializeButtons()
+        {
+            GenerateButton.IsEnabled = false;
+            _generateButtonLock = false;
+
+            StopButton.IsEnabled = false;
+            _stopButtonLock = false;
+        }
+
+        private void UpdateTime(object sender, EventArgs e)
+        {
+            _seconds++;
+
+            if (_seconds < 10)
             {
-                gui = drawing.CloneIndividual();
+                this.elapsedTime.Content = "Elapsed time: " + _minutes + ":" + "0" + _seconds;
+            }
+            else if (_seconds >= 10 && _seconds < 60)
+            {
+                this.elapsedTime.Content = "Elapsed time: " + _minutes + ":" + _seconds;
+            }
+            else if (_seconds >= 60)
+            {
+                _seconds = 0;
+                _minutes++;
+                this.elapsedTime.Content = "Elapsed time: " + _minutes + ":" + "00";
             }
 
-            if (gui == null)
+
+        }
+
+        private void ShowDataImages(object sender, EventArgs e)
+        {
+            if (_tmpIndividual == null || _originalBitmap == null)
+            {
                 return;
+            }
 
-            if (_originalBitmap == null)
-                return;
+            lock (_tmpIndividual)
+            {
+                if (_bestOfAllIndividual == null)
+                {
+                    _bestOfAllIndividual = _tmpIndividual.CloneIndividual();
+                    _newBestIndividual = true;
+                }
 
+                if (_bestOfAllIndividual.Adaptation < _tmpIndividual.Adaptation)
+                {
+                    _bestOfAllIndividual = _tmpIndividual.CloneIndividual();
+                    _newBestIndividual = true;
+                }
 
-            this.bestGeneticImage.Source = null;
+                _topGenerationIndividual = _tmpIndividual.CloneIndividual();
+            }
 
             using (var bit = new Bitmap(_originalBitmap.Width, _originalBitmap.Height))
             {
-                Graphics g = Graphics.FromImage(bit);
-                g.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.HighQuality;
+                this.actualGeneticImage.Source = null;
+                Graphics graphics = Graphics.FromImage(bit);
+                graphics.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.HighQuality;
+                ImageRenderer.DrawImage(_topGenerationIndividual, graphics);
+                bit.Save("topGenerationIndividual.png", ImageFormat.Png);
 
-                ImageRenderer.DrawImage(gui, g);
-
-                bit.Save("test.jpeg", ImageFormat.Jpeg);
+                if (_newBestIndividual == true)
+                {
+                    this.bestGeneticImage.Source = null;
+                    bit.Save("topIndividual.png", ImageFormat.Png);
+                }
             }
 
             var bitmap = new BitmapImage();
-            var stream = File.OpenRead("test.jpeg");
+            var stream = File.OpenRead("topGenerationIndividual.png");
 
             bitmap.BeginInit();
             bitmap.CacheOption = BitmapCacheOption.OnLoad;
@@ -91,37 +162,95 @@ namespace ImageEvolution
             stream.Close();
             stream.Dispose();
 
-            this.bestGeneticImage.Source = bitmap;
+            this.actualGeneticImage.Source = bitmap;
+            this.generation.Content = "Generation: " + _topGenerationIndividual.Generation.ToString();
+            this.currentFitness.Content = "Current fitness: " + Math.Round(_topGenerationIndividual.Adaptation, 2).ToString() + "%";
 
-            this.generation.Content = gui.Generation.ToString();
+            if (_newBestIndividual == true)
+            {
+                var bitmap1 = new BitmapImage();
+                var stream1 = File.OpenRead("topIndividual.png");
 
-            this.currentFitness.Content = "Current fitness " + Math.Round(gui.Adaptation, 2).ToString() + "%";
+                bitmap1.BeginInit();
+                bitmap1.CacheOption = BitmapCacheOption.OnLoad;
+                bitmap1.StreamSource = stream1;
+                bitmap1.EndInit();
+                stream1.Close();
+                stream1.Dispose();
+
+                this.bestGeneticImage.Source = bitmap1;
+                this.bestFitness.Content = "Best fitness: " + Math.Round(_bestOfAllIndividual.Adaptation, 2).ToString() + "%";
+
+                _newBestIndividual = false;
+            }
         }
-
 
         private void Button_Click(object sender, RoutedEventArgs e)
         {
-            if (initialized == false)
+            if (_generateButtonLock == false)
             {
-                _community.InitializeEvolution(sourceColours);
-                initialized = true;
-            }
-
-            this.GenerateButton.IsEnabled = false;
-
-            new Thread(() =>
-            {
-                Thread.CurrentThread.IsBackground = true;
-                Thread.CurrentThread.Priority = ThreadPriority.AboveNormal;
-
-                while (true)
+                if(_evolutionInitialized == false)
                 {
-                    drawing = _community.Generate();
+                    AlgorithmSettings.CircleShape = circleCheckBox.IsChecked ?? false;
+                    AlgorithmSettings.PentagonShape = PentagonCheckBox.IsChecked ?? false;
+                    AlgorithmSettings.SquareShape = rectangleCheckBox.IsChecked ?? false;
+                    AlgorithmSettings.TriangleShape = triangleCheckBox.IsChecked ?? false;
+
+                    circleCheckBox.IsEnabled = false;
+                    PentagonCheckBox.IsEnabled = false;
+                    rectangleCheckBox.IsEnabled = false;
+                    triangleCheckBox.IsEnabled = false;
+
+                    _community.InitializeEvolution(sourceColours);
+                    _evolutionInitialized = true;
                 }
 
-            }).Start();
+                this.GenerateButton.IsEnabled = false;
+                _generateButtonLock = true;
 
+                this.StopButton.IsEnabled = true;
+                _stopButtonLock = false;
 
+                _timeTimer.Start();
+            }
+
+            RemoveThread();
+
+            _generationThread = new Thread(() =>
+            {
+                Thread.CurrentThread.IsBackground = true;
+                Thread.CurrentThread.Priority = ThreadPriority.Highest;
+
+                try
+                {
+                    GenerateImages();
+                }
+                catch(ThreadInterruptedException ex)
+                {
+                    // TODO ?
+                }
+
+            });
+            _generationThread.Start();
+        }
+
+        private void RemoveThread()
+        {
+            if (_generationThread != null)
+            {
+                _generationThread.Interrupt();
+
+                _generationThread.Join();
+                _generationThread = null;
+            }
+        }
+
+        private void GenerateImages()
+        {
+            while (!_stopButtonLock)
+            {
+                _tmpIndividual = _community.Generate();
+            }
         }
 
         public void EventIndividualFinished(object sender, IndividualEventArgs e)
@@ -132,7 +261,7 @@ namespace ImageEvolution
                 {
                     using (Graphics g = Graphics.FromImage(backBuffer))
                     {
-                        ImageRenderer.DrawImage(drawing, g);
+                        ImageRenderer.DrawImage(_tmpIndividual, g);
 
                     }
 
@@ -166,7 +295,54 @@ namespace ImageEvolution
 
                 AlgorithmSettings.ImageWidth = _originalBitmap.Width;
                 AlgorithmSettings.ImageHeight = _originalBitmap.Height;
+
+                this.GenerateButton.IsEnabled = true;
+                this._generateButtonLock = false;
             }
+        }
+
+        private void StopButtonClicki(object sender, RoutedEventArgs e)
+        {
+            _stopButtonLock = true;
+
+            StopButton.IsEnabled = false;
+
+            _generateButtonLock = false;
+            GenerateButton.IsEnabled = true;
+
+            _timeTimer.Stop();
+
+            RemoveThread();
+        }
+
+        private void Slider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
+        {
+
+        }
+
+        private void CheckBox_Checked(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void CheckBoxCircle(object sender, RoutedEventArgs e)
+        {
+           
+        }
+
+        private void CheckBoxTriangle(object sender, RoutedEventArgs e)
+        {
+           
+        }
+
+        private void CheckBoxRectangle(object sender, RoutedEventArgs e)
+        {
+           
+        }
+
+        private void CheckBoxPentagon(object sender, RoutedEventArgs e)
+        {
+           
         }
     }
 }

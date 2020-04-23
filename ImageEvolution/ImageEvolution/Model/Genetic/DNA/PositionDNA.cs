@@ -1,7 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
-
+using System.Windows.Shapes;
+using ImageEvolution.Model.Genetic.Chromosome;
 using ImageEvolution.Model.Settings;
 using ImageEvolution.Model.Utils;
 
@@ -20,10 +21,10 @@ namespace ImageEvolution.Model.Genetic.DNA
 
         public IDNA CloneDNA()
         {
-            return new PositionDNA
+            return new PositionDNA()
             {
                 PositionX = PositionX,
-                PositionY = PositionY
+                PositionY = PositionY,
             };
         }
 

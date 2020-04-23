@@ -4,6 +4,7 @@ using ImageEvolution.Model.Utils;
 using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Windows.Shapes;
 
 namespace ImageEvolution.Model.Genetic.Evolution
 {
@@ -13,23 +14,32 @@ namespace ImageEvolution.Model.Genetic.Evolution
         
         public int Generation { get; set; }
 
-        public List<ShapeChromosome> Shapes { get; set; }
+        public List<ShapeChromosome> TriangleShapes { get; set; }
+        public List<ShapeChromosome> SquareShapes { get; set; }
 
         public Individual()
         {
-            Shapes = new List<ShapeChromosome>();
+            TriangleShapes = new List<ShapeChromosome>();
+            SquareShapes = new List<ShapeChromosome>();
         }
 
         public Individual CloneIndividual()
         {
             var individual = new Individual();
-            individual.Shapes = new List<ShapeChromosome>();
+            individual.TriangleShapes = new List<ShapeChromosome>();
+            individual.SquareShapes = new List<ShapeChromosome>();
+
             individual.Adaptation = Adaptation;
             individual.Generation = Generation;
 
-            foreach(var shape in Shapes)
+            foreach(var shape in TriangleShapes)
             {
-                individual.Shapes.Add(shape.CloneShapeChromosome());
+                individual.TriangleShapes.Add(shape.CloneShapeChromosome());
+            }
+
+            foreach (var shape in SquareShapes)
+            {
+                individual.SquareShapes.Add(shape.CloneShapeChromosome());
             }
 
             return individual;
@@ -37,18 +47,50 @@ namespace ImageEvolution.Model.Genetic.Evolution
 
         public void Initialize()
         {
-            for (int i = 0; i < AlgorithmSettings.ShapesAmount; i++)
+            int shapesAmount = AlgorithmSettings.ShapesAmount;
+
+            for (int i = 0; i < shapesAmount;)
             {
-                AddShape();
+                if(AlgorithmSettings.CircleShape)
+                {
+                    AddShape(ShapeType.CIRCLE);
+                    i++;
+                }
+
+                if(AlgorithmSettings.PentagonShape)
+                {
+                    AddShape(ShapeType.PENTAGON);
+                    i++;
+                }
+
+                if (AlgorithmSettings.SquareShape)
+                {
+                    AddShape(ShapeType.SQUARE);
+                    i++;
+                }
+
+                if(AlgorithmSettings.TriangleShape)
+                {
+                    AddShape(ShapeType.TRIANGLE);
+                    i++;
+                }
             }
         }
 
-        private void AddShape()
+        private void AddShape(ShapeType shapeType)
         {
-            var shape = new ShapeChromosome();
+            var shape = new ShapeChromosome(shapeType);
             shape.InitializeDNA();
 
-            Shapes.Add(shape);
+            switch(shapeType)
+            {
+                case ShapeType.TRIANGLE:
+                    TriangleShapes.Add(shape);
+                    break;
+                case ShapeType.SQUARE:
+                    SquareShapes.Add(shape);
+                    break;
+            }
         }
     }
 }

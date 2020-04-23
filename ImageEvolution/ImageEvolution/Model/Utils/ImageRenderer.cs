@@ -15,7 +15,12 @@ namespace ImageEvolution.Model.Utils
         {
             graphics.Clear(Color.White);
 
-            foreach(var shape in image.Shapes)
+            foreach(var shape in image.TriangleShapes)
+            {
+                DrawShape(shape, graphics);
+            }
+
+            foreach (var shape in image.SquareShapes)
             {
                 DrawShape(shape, graphics);
             }
