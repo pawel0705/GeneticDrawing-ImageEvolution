@@ -17,25 +17,30 @@ namespace ImageEvolution.Model.Genetic.Evolution
         public List<ShapeChromosome> TriangleShapes { get; set; }
         public List<ShapeChromosome> SquareShapes { get; set; }
         public List<ShapeChromosome> ElipseShapes { get; set; }
+        public List<ShapeChromosome> PentagonShapes { get; set; }
 
         public Individual()
         {
             TriangleShapes = new List<ShapeChromosome>();
             SquareShapes = new List<ShapeChromosome>();
             ElipseShapes = new List<ShapeChromosome>();
+            PentagonShapes = new List<ShapeChromosome>();
         }
 
         public Individual CloneIndividual()
         {
-            var individual = new Individual();
-            individual.TriangleShapes = new List<ShapeChromosome>();
-            individual.SquareShapes = new List<ShapeChromosome>();
-            individual.ElipseShapes = new List<ShapeChromosome>();
+            var individual = new Individual
+            {
+                TriangleShapes = new List<ShapeChromosome>(),
+                SquareShapes = new List<ShapeChromosome>(),
+                ElipseShapes = new List<ShapeChromosome>(),
+                PentagonShapes = new List<ShapeChromosome>(),
 
-            individual.Adaptation = Adaptation;
-            individual.Generation = Generation;
+                Adaptation = Adaptation,
+                Generation = Generation
+            };
 
-            foreach(var shape in TriangleShapes)
+            foreach (var shape in TriangleShapes)
             {
                 individual.TriangleShapes.Add(shape.CloneShapeChromosome());
             }
@@ -48,6 +53,11 @@ namespace ImageEvolution.Model.Genetic.Evolution
             foreach (var shape in ElipseShapes)
             {
                 individual.ElipseShapes.Add(shape.CloneShapeChromosome());
+            }
+
+            foreach (var shape in PentagonShapes)
+            {
+                individual.PentagonShapes.Add(shape.CloneShapeChromosome());
             }
 
             return individual;
@@ -100,6 +110,9 @@ namespace ImageEvolution.Model.Genetic.Evolution
                     break;
                 case ShapeType.CIRCLE:
                     ElipseShapes.Add(shape);
+                    break;
+                case ShapeType.PENTAGON:
+                    PentagonShapes.Add(shape);
                     break;
             }
         }

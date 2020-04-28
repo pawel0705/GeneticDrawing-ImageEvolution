@@ -99,18 +99,7 @@ namespace ImageEvolution.Model.Genetic.Evolution
                 }
             }
 
-            if(_generation > 350)
-            {
-                AlgorithmSettings.MutationChance = 50;
-            }
-            if(_generation > 700)
-            {
-                AlgorithmSettings.MutationChance = 100;
-            }
-            if(_generation > 1000)
-            {
-                AlgorithmSettings.MutationChance = 200;
-            }
+            
 
             EventIndividualFinished(_eliteIndividuals[0]);
 
@@ -135,9 +124,9 @@ namespace ImageEvolution.Model.Genetic.Evolution
                     individualChild.TriangleShapes.Add(father.TriangleShapes[i]);
                 }
 
-                if(RandomMutation.RandomIntervalIntegerInclusive(0, AlgorithmSettings.MutationChance) == 1)
+                if(WillMutate())
                 {
-                    individualChild.TriangleShapes[i].MutateChromosome(MutationType.SOFT);
+                    individualChild.TriangleShapes[i].MutateChromosome();
                 }
             }
 
@@ -153,9 +142,9 @@ namespace ImageEvolution.Model.Genetic.Evolution
                     individualChild.SquareShapes.Add(father.SquareShapes[i]);
                 }
 
-                if (RandomMutation.RandomIntervalIntegerInclusive(0, AlgorithmSettings.MutationChance) == 1)
+                if (WillMutate())
                 {
-                    individualChild.SquareShapes[i].MutateChromosome(MutationType.SOFT);
+                    individualChild.SquareShapes[i].MutateChromosome();
                 }
             }
 
@@ -171,15 +160,46 @@ namespace ImageEvolution.Model.Genetic.Evolution
                     individualChild.ElipseShapes.Add(father.ElipseShapes[i]);
                 }
 
-                if (RandomMutation.RandomIntervalIntegerInclusive(0, AlgorithmSettings.MutationChance) == 1)
+                if (WillMutate())
                 {
-                    individualChild.ElipseShapes[i].MutateChromosome(MutationType.SOFT);
+                    individualChild.ElipseShapes[i].MutateChromosome();
                 }
             }
 
+            // pentagon shapes
+            for (int i = 0; i < mother.PentagonShapes.Count; i++)
+            {
+                if (RandomMutation.RandomIntervalIntegerInclusive(0, 1) == 0)
+                {
+                    individualChild.PentagonShapes.Add(mother.PentagonShapes[i]);
+                }
+                else
+                {
+                    individualChild.PentagonShapes.Add(father.PentagonShapes[i]);
+                }
 
+                if (WillMutate())
+                {
+                    individualChild.PentagonShapes[i].MutateChromosome();
+                }
+            }
 
             return individualChild;
+        }
+
+        private bool WillMutate()
+        {
+            if(AlgorithmSettings.MutationChance == 0)
+            {
+                return false;
+            }
+
+            if(RandomMutation.RandomIntervalIntegerInclusive(0, 100 - AlgorithmSettings.MutationChance) == 0)
+            {
+                return true;
+            }
+
+            return false;
         }
 
         public event EventHandler<IndividualEventArgs> IndividualCreated;

@@ -16,14 +16,16 @@ namespace ImageEvolution.Model.Utils
             graphics.Clear(Color.White);
 
             var maxIterator = image.SquareShapes.Count + 
-                image.ElipseShapes.Count + image.TriangleShapes.Count;
+                image.ElipseShapes.Count + 
+                image.TriangleShapes.Count +
+                image.PentagonShapes.Count;
 
             for(int i = 0; i < maxIterator; i++)
             {
 
                 if(image.SquareShapes.Count > i)
                 {
-                    DrawShape(image.SquareShapes[i], graphics);
+                    DrawFigure(image.SquareShapes[i], graphics);
                 }
 
                 if(image.ElipseShapes.Count > i)
@@ -33,12 +35,18 @@ namespace ImageEvolution.Model.Utils
 
                 if(image.TriangleShapes.Count > i)
                 {
-                    DrawShape(image.TriangleShapes[i], graphics);
+                    DrawFigure(image.TriangleShapes[i], graphics);
                 }
 
-                if(image.TriangleShapes.Count < i &&
+                if (image.PentagonShapes.Count > i)
+                {
+                    DrawFigure(image.PentagonShapes[i], graphics);
+                }
+
+                if (image.TriangleShapes.Count < i &&
                     image.ElipseShapes.Count < i &&
-                    image.SquareShapes.Count < i)
+                    image.SquareShapes.Count < i &&
+                    image.PentagonShapes.Count < i)
                 {
                     break;
                 }
@@ -55,7 +63,7 @@ namespace ImageEvolution.Model.Utils
 
         }
 
-        private static void DrawShape(ShapeChromosome shape, Graphics graphics)
+        private static void DrawFigure(ShapeChromosome shape, Graphics graphics)
         {
             using (Brush brush = GetSolidColour(shape.ColourShape))
             {

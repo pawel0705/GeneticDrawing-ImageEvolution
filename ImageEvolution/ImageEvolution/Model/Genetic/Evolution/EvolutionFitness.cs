@@ -23,7 +23,6 @@ namespace ImageEvolution
             _dMax = _imageWidth * _imageHeight * Math.Sqrt(255 * 255 * 3);
         }
 
-        // TODO getpixel jest wolne, zamienc pozniej na lockbity
         public unsafe void CompareImages(Individual individual, Color[,] originalColours)
         {
             double d = 0;

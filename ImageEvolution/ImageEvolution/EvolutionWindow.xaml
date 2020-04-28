@@ -9,64 +9,99 @@
              FontFamily ="Verdana"
              FontSize="15"
              Foreground="Purple"
-             Height="auto" Width="auto">
+             Height="600" Width="auto">
     <Grid>
         <materialDesign:TransitioningContent x:Name="TrainsitionigContentSlide" OpeningEffect="{materialDesign:TransitionEffect SlideInFromLeft, Duration=0:0:0.8}">
             <Grid>
-                <StackPanel Orientation="Horizontal">
-                    <GroupBox Header="Original image" Width="auto" Height="auto" Margin="0,0,0,167">
+                <StackPanel Orientation="Horizontal"  Margin="0,0,0,345">
+                    <GroupBox Header="Original image"  Width="250" Height="250" Margin="0,0,0,0">
                         <Image Name="originalImage" Width="200" Height="200"></Image>
                     </GroupBox>
-                    <GroupBox Header="Best of all individual" Width="auto" Height="auto" Margin="0,0,0,167">
+                    <GroupBox Header="Best of all individual" Width="250" Height="250" Margin="0,0,0,0">
                         <Image Name="bestGeneticImage" Width="200" Height="200" />
                     </GroupBox>
-                    <GroupBox Header="Top individual from generation" Width="auto" Height="auto" Margin="0,0,0,167">
+                    <GroupBox Header="Top individual from generation" Width="250" Height="250" Margin="0,0,0,0">
                         <Image Name="actualGeneticImage" Width="200" Height="200"/>
                     </GroupBox>
                 </StackPanel>
 
+                <Button Content="Instert image" Name="InsertImageButton" Width="130" HorizontalAlignment="Left" Margin="764,36,0,0" VerticalAlignment="Top" Click="InsertOriginalImage"/>
+                <Button Content="Generate" Name="GenerateButton" Width="130" HorizontalAlignment="Left" Margin="764,88,0,0" VerticalAlignment="Top" Click="Button_Click"/>
+                <Button Content="Stop" Name="StopButton" Width="130" HorizontalAlignment="Left" Margin="764,140,0,0" VerticalAlignment="Top" Click="StopButtonClicki"/>
+                <Button Content="Reset" Name="ResetButton" Width="130" HorizontalAlignment="Left" Margin="764,191,0,0" VerticalAlignment="Top" Click="ResetButtonClick"/>
 
+                <StackPanel Orientation="Vertical" HorizontalAlignment="Left" VerticalAlignment="Top"/>
 
-
-                <Button Content="Instert image" Name="InsertImageButton" Width="130" HorizontalAlignment="Left" Margin="13,278,0,0" VerticalAlignment="Top" Click="InsertOriginalImage"/>
-                <Button Content="Generate" Name="GenerateButton" Width="130" HorizontalAlignment="Left" Margin="13,318,0,0" VerticalAlignment="Top" Click="Button_Click"/>
-                <Button Content="Stop" Name="StopButton" Width="130" HorizontalAlignment="Left" Margin="13,364,0,0" VerticalAlignment="Top" Click="StopButtonClicki"/>
-
-                <StackPanel Orientation="Vertical" HorizontalAlignment="Left"  Margin="500,290,0,0">
-                    <Label FontSize="15" Foreground="Purple" Name="elapsedTime"  Content ="Elapsed time: 0:00"/>
-                    <Label FontSize="15" Foreground="Purple" Name="generation" Content="Generation: 0"/>
-                    <Label FontSize="15" Foreground="Purple" Name="bestFitness" Content="Best fitness: 0%"/>
-                    <Label FontSize="15" Foreground="Purple" Name="currentFitness" Content="Current fitness: 0%"/>
+                <StackPanel Orientation="Vertical" HorizontalAlignment="Left"  Margin="624,263,0,0" Height="325" VerticalAlignment="Top">
+                    <Label FontWeight="Bold" Foreground="MediumPurple" FontSize="20">Evolution information:</Label>
+                    <Label Foreground="Purple" Name="elapsedTime"  Content ="Elapsed time: 0:00"/>
+                    <Label Foreground="Purple" Name="generation" Content="Generation: 0"/>
+                    <Label Foreground="Purple" Name="bestFitness" Content="Best fitness: 0%"/>
+                    <Label Foreground="Purple" Name="currentFitness" Content="Current fitness: 0%"/>
+                    <Label Foreground="Purple" Name="populationLabel" Content="Population: 0"/>
+                    <Label Foreground="Purple" Name="eliteLabel" Content="Elite: 0"/>
+                    <Label Foreground="Purple" Name="mutationTypeLabel" Content="Mutation type: Nothing"/>
+                    <Label Foreground="Purple" Name="mutationChanceLabel" Content="Mutation chance: 0%"/>
+                    <Label Foreground="Purple" Name="dinamicallyMutationLabel" Content="Dynamic mutation: NO"/>
+                    <Label Foreground="Purple" Name="reproductionTypeLabel" Content="Reproduction: Two-parents"/>
+                    <Label Foreground="Purple" Name="killedChildsLabel" Content="Killed childs: 0"/>
                 </StackPanel>
 
-                <StackPanel Orientation="Vertical" HorizontalAlignment="Left"  VerticalAlignment="Top" Margin="148,278,0,0">
+                <StackPanel Orientation="Vertical" HorizontalAlignment="Left"  VerticalAlignment="Top" Margin="10,263,0,0" Height="273">
+                    <Label FontWeight="Bold" Foreground="MediumPurple" FontSize="12">Shapes</Label>
                     <DockPanel VerticalAlignment="Center" Margin="10">
                         <TextBox Text="{Binding ElementName=ShapesAmountSlider, Path=Value, UpdateSourceTrigger=PropertyChanged}" DockPanel.Dock="Right" TextAlignment="Right" Width="40" />
                         <Slider Name="ShapesAmountSlider" Maximum="250"  TickFrequency="1" IsSnapToTickEnabled="True" Width="150" ValueChanged="ShapesAmountSlider_ValueChanged"/>
                     </DockPanel>
 
+                    <Label FontWeight="Bold" Foreground="MediumPurple" FontSize="12">Population</Label>
                     <DockPanel VerticalAlignment="Center" Margin="10">
                         <TextBox Text="{Binding ElementName=PopulationAmountSlider, Path=Value, UpdateSourceTrigger=PropertyChanged}" DockPanel.Dock="Right" TextAlignment="Right" Width="40" />
                         <Slider Name="PopulationAmountSlider" Maximum="100"  TickFrequency="1" IsSnapToTickEnabled="True" Width="150" ValueChanged="PopulationAmountSlider_ValueChanged"/>
                     </DockPanel>
 
+                    <Label FontWeight="Bold" Foreground="MediumPurple" FontSize="12">Elite (%)</Label>
                     <DockPanel VerticalAlignment="Center" Margin="10">
-
                         <Slider Name="EliteAmountSlider" Maximum="100"  TickFrequency="1" IsSnapToTickEnabled="True" Width="150" ValueChanged="EliteAmountSlider_ValueChanged"/>
                         <TextBlock>
-                        <TextBox Text="{Binding ElementName=EliteAmountSlider, Path=Value, UpdateSourceTrigger=PropertyChanged}" DockPanel.Dock="Right" TextAlignment="Right" Width="40" />
-                                                %</TextBlock>
+                        <TextBox Text="{Binding ElementName=EliteAmountSlider, Path=Value, UpdateSourceTrigger=PropertyChanged}" DockPanel.Dock="Right" TextAlignment="Right" Width="40" /></TextBlock>
                     </DockPanel>
 
+                    <Label FontWeight="Bold" Foreground="MediumPurple" FontSize="12">Mutation (%)</Label>
+                    <DockPanel VerticalAlignment="Center" Margin="10">
+                        <Slider Name="MutationAmountSlider" Maximum="100"  TickFrequency="1" IsSnapToTickEnabled="True" Width="150" ValueChanged="MutationAmountSlider_ValueChanged"/>
+                        <TextBlock>
+                        <TextBox Text="{Binding ElementName=MutationAmountSlider, Path=Value, UpdateSourceTrigger=PropertyChanged}" DockPanel.Dock="Right" TextAlignment="Right" Width="40" /></TextBlock>
+                    </DockPanel>
                 </StackPanel>
 
-                <StackPanel Orientation="Vertical"  HorizontalAlignment="Left"  Margin="385,290,0,10">
-                    <CheckBox Name="circleCheckBox" FontSize="15" Foreground="Purple" Content="Circle"  Checked="CheckBoxCircle"/>
-                    <CheckBox Name="triangleCheckBox" FontSize="15" Foreground="Purple" Content="Triangle"  Checked="CheckBoxTriangle"/>
-                    <CheckBox Name="rectangleCheckBox" FontSize="15" Foreground="Purple" Content="Rectangle"  Checked="CheckBoxRectangle"/>
-                    <CheckBox Name="PentagonCheckBox" FontSize="15" Foreground="Purple" Content="Pentagon"  Checked="CheckBoxPentagon"/>
+                <StackPanel Orientation="Vertical"  HorizontalAlignment="Left"  Margin="447,263,0,134" Width="172">
+                    <Label FontWeight="Bold" Foreground="MediumPurple" FontSize="20" Content="Type of shape:"/>
+                    <CheckBox Margin="0 5 0 0" x:Name="circleCheckBox" Content="Circle"/>
+                    <CheckBox Margin="0 5 0 0" x:Name="triangleCheckBox" Content="Triangle"/>
+                    <CheckBox Margin="0 5 0 0" x:Name="rectangleCheckBox" Content="Rectangle"/>
+                    <CheckBox Margin="0 5 0 0" x:Name="pentagonCheckBox" Content="Pentagon"/>
                 </StackPanel>
 
+                <StackPanel Orientation="Vertical"  HorizontalAlignment="Left" Margin="447,416,0,10" Width="200">
+                    <Label FontWeight="Bold" Foreground="MediumPurple" FontSize="20" Content="Reproduction:"/>
+                    <RadioButton Name="singleParentRadio" GroupName="algorithmOption" Content="Single-parent" Margin="0,0,0,0"></RadioButton>
+                    <RadioButton Name="twoParentRadio" GroupName="algorithmOption" Content="Two-Parent" Margin="0,0,0,0"></RadioButton>
+                </StackPanel>
+
+                <StackPanel Orientation="Vertical"  HorizontalAlignment="Left" Margin="225,416,0,10" Width="199">
+                    <Label FontWeight="Bold" Foreground="MediumPurple" FontSize="20" Content="Mutation chance:"/>
+                    <RadioButton Name="mutationStaticRadio" GroupName="mutationOption" Content="Static" Margin="0,0,0,0"></RadioButton>
+                    <RadioButton Name="mutationDynamicRadio" GroupName="mutationOption" Content="Dynamic" Margin="0,0,0,0"></RadioButton>
+                </StackPanel>
+
+                <StackPanel Orientation="Vertical"  HorizontalAlignment="Left" Margin="234,263,0,163">
+                    <Label FontWeight="Bold" Foreground="MediumPurple" FontSize="20" Content="Mutation type:"/>
+                    <RadioButton Name="mutationSoftRadio" GroupName="mutationType" Content="Soft" Margin="0,0,0,0"></RadioButton>
+                    <RadioButton Name="mutationMediumRadio" GroupName="mutationType" Content="Medium" Margin="0,0,0,0"></RadioButton>
+                    <RadioButton Name="mutationHardRadio" GroupName="mutationType" Content="Hard" Margin="0,0,0,0"></RadioButton>
+                    <RadioButton Name="mutationGaussianRadio" GroupName="mutationType" Content="Gaussian" Margin="0,0,0,0"></RadioButton>
+                </StackPanel>
 
             </Grid>
         </materialDesign:TransitioningContent>

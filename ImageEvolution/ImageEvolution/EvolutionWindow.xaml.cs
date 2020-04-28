@@ -24,6 +24,8 @@ using System.Windows.Shapes;
 using static ImageEvolution.ImageOpener;
 using System.Windows.Threading;
 using System.IO;
+using MaterialDesignThemes.Wpf;
+using System.Diagnostics;
 
 namespace ImageEvolution
 {
@@ -70,6 +72,7 @@ namespace ImageEvolution
             PopulationAmountSlider.Value = 50;
             EliteAmountSlider.Value = 10;
             ShapesAmountSlider.Value = 100;
+            MutationAmountSlider.Value = 5;
         }
 
         private void InitializeObjects()
@@ -173,6 +176,10 @@ namespace ImageEvolution
             this.actualGeneticImage.Source = bitmap;
             this.generation.Content = "Generation: " + _topGenerationIndividual.Generation.ToString();
             this.currentFitness.Content = "Current fitness: " + Math.Round(_topGenerationIndividual.Adaptation, 2).ToString() + "%";
+            this.populationLabel.Content = "Population: " + AlgorithmSettings.Population;
+            this.eliteLabel.Content = "Elite: " + AlgorithmSettings.Elite;
+            this.mutationTypeLabel.Content = "Mutation type: " + AlgorithmSettings.MutationType.ToString();
+            this.mutationChanceLabel.Content = "Mutation chance: " + AlgorithmSettings.MutationChance.ToString() + "%";
 
             if (_newBestIndividual == true)
             {
@@ -200,12 +207,31 @@ namespace ImageEvolution
                 if(_evolutionInitialized == false)
                 {
                     AlgorithmSettings.CircleShape = circleCheckBox.IsChecked ?? false;
-                    AlgorithmSettings.PentagonShape = PentagonCheckBox.IsChecked ?? false;
+                    AlgorithmSettings.PentagonShape = pentagonCheckBox.IsChecked ?? false;
                     AlgorithmSettings.SquareShape = rectangleCheckBox.IsChecked ?? false;
                     AlgorithmSettings.TriangleShape = triangleCheckBox.IsChecked ?? false;
 
+                    if(mutationSoftRadio.IsChecked ?? false)
+                    {
+                        AlgorithmSettings.MutationType = MutationType.SOFT;
+                    }
+                    else if(mutationMediumRadio.IsChecked ?? false)
+                    {
+                        AlgorithmSettings.MutationType = MutationType.MEDIUM;
+                    }
+                    else if(mutationHardRadio.IsChecked ?? false)
+                    {
+                        AlgorithmSettings.MutationType = MutationType.HARD;
+                    }
+                    else
+                    {
+                        AlgorithmSettings.MutationType = MutationType.GAUSSIAN;
+                    }
+
+                    AlgorithmSettings.MutationChance = (int)MutationAmountSlider.Value;
+
                     circleCheckBox.IsEnabled = false;
-                    PentagonCheckBox.IsEnabled = false;
+                    pentagonCheckBox.IsEnabled = false;
                     rectangleCheckBox.IsEnabled = false;
                     triangleCheckBox.IsEnabled = false;
 
@@ -323,35 +349,7 @@ namespace ImageEvolution
             RemoveThread();
         }
 
-        private void Slider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
-        {
-
-        }
-
-        private void CheckBox_Checked(object sender, RoutedEventArgs e)
-        {
-
-        }
-
-        private void CheckBoxCircle(object sender, RoutedEventArgs e)
-        {
-           
-        }
-
-        private void CheckBoxTriangle(object sender, RoutedEventArgs e)
-        {
-           
-        }
-
-        private void CheckBoxRectangle(object sender, RoutedEventArgs e)
-        {
-           
-        }
-
-        private void CheckBoxPentagon(object sender, RoutedEventArgs e)
-        {
-           
-        }
+  
 
         private void ShapesAmountSlider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
@@ -371,6 +369,18 @@ namespace ImageEvolution
             {
                 AlgorithmSettings.Elite = 1;
             }
+        }
+
+        private void ResetButtonClick(object sender, RoutedEventArgs e)
+        {
+            Process.Start(Application.ResourceAssembly.Location);
+
+            Application.Current.Shutdown();
+        }
+
+        private void MutationAmountSlider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
+        {
+
         }
     }
 }

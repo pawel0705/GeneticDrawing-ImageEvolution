@@ -6,6 +6,8 @@ using System.Collections.Generic;
 using System.Text;
 using System.Windows.Shapes;
 
+using ImageEvolution.Model.Utils;
+
 namespace ImageEvolution.Model.Genetic.Chromosome
 {
     public class ShapeChromosome
@@ -14,7 +16,7 @@ namespace ImageEvolution.Model.Genetic.Chromosome
 
         public List<PositionDNA> PositionsShape { get; set; }
 
-        private ShapeType _shapeType = ShapeType.VOID;
+        private readonly ShapeType _shapeType = ShapeType.VOID;
 
         public ShapeChromosome(ShapeType shapeType)
         {
@@ -48,6 +50,7 @@ namespace ImageEvolution.Model.Genetic.Chromosome
 
         private void CreateVerticlePositions()
         {
+
             if (_shapeType == ShapeType.TRIANGLE)
             {
                 var pivotPoint = new PositionDNA();
@@ -105,11 +108,29 @@ namespace ImageEvolution.Model.Genetic.Chromosome
 
                 PositionsShape.Add(position);
             }
+            else if(_shapeType == ShapeType.PENTAGON)
+            {
+                var pivotPoint = new PositionDNA();
+                pivotPoint.InitializeDNA();
+                PositionsShape.Add(pivotPoint);
+
+                for (int i = 0; i < 4; i++)
+                {
+                    var position = new PositionDNA();
+                    position.PositionX = pivotPoint.PositionX;
+                    position.PositionY = pivotPoint.PositionY;
+
+                    position.SoftMutation();
+
+                    PositionsShape.Add(position);
+                }
+            }
+
         }
 
-        public void MutateChromosome(MutationType mutationType)
+        public void MutateChromosome()
         {
-            switch (mutationType)
+            switch (AlgorithmSettings.MutationType)
             {
                 case MutationType.SOFT:
                     SoftMutation();
@@ -130,43 +151,111 @@ namespace ImageEvolution.Model.Genetic.Chromosome
         private void MutateTriangleShapePosition()
         {
             var position = RandomMutation.RandomIntervalIntegerInclusive(0, PositionsShape.Count - 1);
-            PositionsShape[position].SoftMutation();
+
+            switch(AlgorithmSettings.MutationType)
+            {
+                case MutationType.SOFT:
+                    PositionsShape[position].SoftMutation();
+                    break;
+                case MutationType.MEDIUM:
+                    PositionsShape[position].MediumMutation();
+                    break;
+                case MutationType.HARD:
+                    for (int i = 0; i < PositionsShape.Count; i++)
+                    {
+                        PositionsShape[i].HardMutation();
+                    }
+                    break;
+            }
         }
 
         private void MutateSquareShapePosition()
         {
             var position = RandomMutation.RandomIntervalIntegerInclusive(0, PositionsShape.Count - 1);
 
-            PositionsShape[position].SoftMutation();
-
-            switch (position)
+            switch (AlgorithmSettings.MutationType)
             {
-                case 0:
+                case MutationType.SOFT:
+                    PositionsShape[position].SoftMutation();
+                    break;
+                case MutationType.MEDIUM:
+                    PositionsShape[position].MediumMutation();
+                    break;
+                case MutationType.HARD:
+                    PositionsShape[0].HardMutation();
                     PositionsShape[1].PositionY = PositionsShape[position].PositionY;
                     PositionsShape[3].PositionX = PositionsShape[position].PositionX;
-                    break;
-                case 1:
-                    PositionsShape[0].PositionY = PositionsShape[position].PositionY;
-                    PositionsShape[2].PositionX = PositionsShape[position].PositionX;
-                    break;
-                case 2:
+
+                    PositionsShape[2].HardMutation();
                     PositionsShape[1].PositionX = PositionsShape[position].PositionX;
                     PositionsShape[3].PositionY = PositionsShape[position].PositionY;
                     break;
-                case 3:
-                    PositionsShape[0].PositionX = PositionsShape[position].PositionX;
-                    PositionsShape[2].PositionY = PositionsShape[position].PositionY;
-                    break;
-                       
             }
 
+            if(AlgorithmSettings.MutationType != MutationType.HARD)
+            {
+                switch (position)
+                {
+                    case 0:
+                        PositionsShape[1].PositionY = PositionsShape[position].PositionY;
+                        PositionsShape[3].PositionX = PositionsShape[position].PositionX;
+                        break;
+                    case 1:
+                        PositionsShape[0].PositionY = PositionsShape[position].PositionY;
+                        PositionsShape[2].PositionX = PositionsShape[position].PositionX;
+                        break;
+                    case 2:
+                        PositionsShape[1].PositionX = PositionsShape[position].PositionX;
+                        PositionsShape[3].PositionY = PositionsShape[position].PositionY;
+                        break;
+                    case 3:
+                        PositionsShape[0].PositionX = PositionsShape[position].PositionX;
+                        PositionsShape[2].PositionY = PositionsShape[position].PositionY;
+                        break;
+                }
+            }
         }
 
         private void MutateElipseShapePosition()
         {
-            var positionSize = RandomMutation.RandomIntervalIntegerInclusive(0, PositionsShape.Count - 1);
+            var position = RandomMutation.RandomIntervalIntegerInclusive(0, PositionsShape.Count - 1);
 
-            PositionsShape[positionSize].SoftMutation();
+            switch (AlgorithmSettings.MutationType)
+            {
+                case MutationType.SOFT:
+                    PositionsShape[position].SoftMutation();
+                    break;
+                case MutationType.MEDIUM:
+                    PositionsShape[position].MediumMutation();
+                    break;
+                case MutationType.HARD:
+                    for (int i = 0; i < PositionsShape.Count; i++)
+                    {
+                        PositionsShape[i].HardMutation();
+                    }
+                    break;
+            }
+        }
+
+        private void MutatePentagonShapePosition()
+        {
+            var position = RandomMutation.RandomIntervalIntegerInclusive(0, PositionsShape.Count - 1);
+
+            switch (AlgorithmSettings.MutationType)
+            {
+                case MutationType.SOFT:
+                    PositionsShape[position].SoftMutation();
+                    break;
+                case MutationType.MEDIUM:
+                    PositionsShape[position].MediumMutation();
+                    break;
+                case MutationType.HARD:
+                    for (int i = 0; i < PositionsShape.Count; i++)
+                    {
+                        PositionsShape[i].HardMutation();
+                    }
+                    break;
+            }
         }
 
         private void MutatePosition()
@@ -181,6 +270,9 @@ namespace ImageEvolution.Model.Genetic.Chromosome
                     break;
                 case ShapeType.CIRCLE:
                     MutateElipseShapePosition();
+                    break;
+                case ShapeType.PENTAGON:
+                    MutatePentagonShapePosition();
                     break;
             }
 
@@ -211,8 +303,7 @@ namespace ImageEvolution.Model.Genetic.Chromosome
                     ColourShape.MediumMutation();
                     break;
                 case 1:
-                    var position = RandomMutation.RandomIntervalIntegerInclusive(0, PositionsShape.Count - 1);
-                    PositionsShape[position].MediumMutation();
+                    MutatePosition();
                     break;
             }
         }
@@ -220,11 +311,8 @@ namespace ImageEvolution.Model.Genetic.Chromosome
         private void HardMutation()
         {
             ColourShape.HardMutation();
+            MutatePosition();
 
-            for(int i = 0; i < PositionsShape.Count; i++)
-            {
-                PositionsShape[i].HardMutation();
-            }
         }
 
         private void GaussianMutation()
