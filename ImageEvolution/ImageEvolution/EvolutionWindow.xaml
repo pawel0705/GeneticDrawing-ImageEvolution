@@ -50,13 +50,13 @@
                 <StackPanel Orientation="Vertical" HorizontalAlignment="Left"  VerticalAlignment="Top" Margin="10,263,0,0" Height="273">
                     <Label FontWeight="Bold" Foreground="MediumPurple" FontSize="12">Shapes</Label>
                     <DockPanel VerticalAlignment="Center" Margin="10">
-                        <TextBox Text="{Binding ElementName=ShapesAmountSlider, Path=Value, UpdateSourceTrigger=PropertyChanged}" DockPanel.Dock="Right" TextAlignment="Right" Width="40" />
-                        <Slider Name="ShapesAmountSlider" Maximum="250"  TickFrequency="1" IsSnapToTickEnabled="True" Width="150" ValueChanged="ShapesAmountSlider_ValueChanged"/>
+                        <TextBox Name ="shapesAmountTextBox"  Text="{Binding ElementName=ShapesAmountSlider, Path=Value, UpdateSourceTrigger=PropertyChanged}" DockPanel.Dock="Right" TextAlignment="Right" Width="40" />
+                        <Slider Name="ShapesAmountSlider" Maximum="500"  TickFrequency="1" IsSnapToTickEnabled="True" Width="150" ValueChanged="ShapesAmountSlider_ValueChanged"/>
                     </DockPanel>
 
                     <Label FontWeight="Bold" Foreground="MediumPurple" FontSize="12">Population</Label>
                     <DockPanel VerticalAlignment="Center" Margin="10">
-                        <TextBox Text="{Binding ElementName=PopulationAmountSlider, Path=Value, UpdateSourceTrigger=PropertyChanged}" DockPanel.Dock="Right" TextAlignment="Right" Width="40" />
+                        <TextBox Name="populationAmountTextBox" Text="{Binding ElementName=PopulationAmountSlider, Path=Value, UpdateSourceTrigger=PropertyChanged}" DockPanel.Dock="Right" TextAlignment="Right" Width="40" />
                         <Slider Name="PopulationAmountSlider" Maximum="100"  TickFrequency="1" IsSnapToTickEnabled="True" Width="150" ValueChanged="PopulationAmountSlider_ValueChanged"/>
                     </DockPanel>
 
@@ -64,14 +64,14 @@
                     <DockPanel VerticalAlignment="Center" Margin="10">
                         <Slider Name="EliteAmountSlider" Maximum="100"  TickFrequency="1" IsSnapToTickEnabled="True" Width="150" ValueChanged="EliteAmountSlider_ValueChanged"/>
                         <TextBlock>
-                        <TextBox Text="{Binding ElementName=EliteAmountSlider, Path=Value, UpdateSourceTrigger=PropertyChanged}" DockPanel.Dock="Right" TextAlignment="Right" Width="40" /></TextBlock>
+                        <TextBox Name="eliteAmountTextBox" Text="{Binding ElementName=EliteAmountSlider, Path=Value, UpdateSourceTrigger=PropertyChanged}" DockPanel.Dock="Right" TextAlignment="Right" Width="40" /></TextBlock>
                     </DockPanel>
 
                     <Label FontWeight="Bold" Foreground="MediumPurple" FontSize="12">Mutation (%)</Label>
                     <DockPanel VerticalAlignment="Center" Margin="10">
                         <Slider Name="MutationAmountSlider" Maximum="100"  TickFrequency="1" IsSnapToTickEnabled="True" Width="150" ValueChanged="MutationAmountSlider_ValueChanged"/>
                         <TextBlock>
-                        <TextBox Text="{Binding ElementName=MutationAmountSlider, Path=Value, UpdateSourceTrigger=PropertyChanged}" DockPanel.Dock="Right" TextAlignment="Right" Width="40" /></TextBlock>
+                        <TextBox Name="mutationAmountTextBox" Text="{Binding ElementName=MutationAmountSlider, Path=Value, UpdateSourceTrigger=PropertyChanged}" DockPanel.Dock="Right" TextAlignment="Right" Width="40" /></TextBlock>
                     </DockPanel>
                 </StackPanel>
 

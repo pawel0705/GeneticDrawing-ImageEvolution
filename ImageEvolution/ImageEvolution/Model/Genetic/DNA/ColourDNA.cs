@@ -26,10 +26,10 @@ namespace ImageEvolution.Model.Genetic.DNA
 
         public void InitializeDNA()
         {
-            RedColour = RandomMutation.RandomColour(Byte.MinValue, Byte.MaxValue);
-            GreenColour = RandomMutation.RandomColour(Byte.MinValue, Byte.MaxValue);
-            BlueColour = RandomMutation.RandomColour(Byte.MinValue, Byte.MaxValue);
-            AlphaColour = RandomMutation.RandomColour(Byte.MinValue, Byte.MaxValue);
+            RedColour = 0;
+            GreenColour = 0;
+            BlueColour = 0;
+            AlphaColour = 0;
         }
 
         public void SoftMutation()

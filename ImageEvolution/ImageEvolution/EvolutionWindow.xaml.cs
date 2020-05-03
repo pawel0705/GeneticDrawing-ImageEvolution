@@ -26,13 +26,15 @@ using System.Windows.Threading;
 using System.IO;
 using MaterialDesignThemes.Wpf;
 using System.Diagnostics;
+using System.Reflection;
 
 namespace ImageEvolution
 {
     public partial class EvolutionWindow : UserControl
     {
         private Bitmap _originalBitmap;
-        private GenerationCycle _community;
+        private TwoParentEvolution _community;
+        private SingleParentEvolution _oneIndividual;
 
         private bool _generateButtonLock = false;
         private bool _insertImageButtonLock = false;
@@ -56,6 +58,8 @@ namespace ImageEvolution
 
         private Thread _generationThread;
 
+        private bool generateTwoParent;
+
         public EvolutionWindow()
         {
             InitializeComponent();
@@ -77,7 +81,9 @@ namespace ImageEvolution
 
         private void InitializeObjects()
         {
-            _community = new GenerationCycle();
+            _community = new TwoParentEvolution();
+            _oneIndividual = new SingleParentEvolution();
+
             _tmpIndividual = new Individual();
         }
 
@@ -181,6 +187,25 @@ namespace ImageEvolution
             this.mutationTypeLabel.Content = "Mutation type: " + AlgorithmSettings.MutationType.ToString();
             this.mutationChanceLabel.Content = "Mutation chance: " + AlgorithmSettings.MutationChance.ToString() + "%";
 
+            if(this.mutationDynamicRadio.IsChecked ?? false)
+            {
+                this.dinamicallyMutationLabel.Content = "Dynamic mutation: YES";
+            }
+            else
+            {
+                this.dinamicallyMutationLabel.Content = "Dynamic mutation: NO";
+            }
+
+            if (this.twoParentRadio.IsChecked ?? false)
+            {
+                this.reproductionTypeLabel.Content = "Reproduction: Two-parents";
+            }
+            else
+            {
+                this.reproductionTypeLabel.Content = "Reproduction: Single-parent";
+            }
+
+
             if (_newBestIndividual == true)
             {
                 var bitmap1 = new BitmapImage();
@@ -211,7 +236,14 @@ namespace ImageEvolution
                     AlgorithmSettings.SquareShape = rectangleCheckBox.IsChecked ?? false;
                     AlgorithmSettings.TriangleShape = triangleCheckBox.IsChecked ?? false;
 
-                    if(mutationSoftRadio.IsChecked ?? false)
+                    AlgorithmSettings.DynamicMutation = mutationDynamicRadio.IsChecked ?? false;
+
+                    AlgorithmSettings.ShapesAmount = (int)ShapesAmountSlider.Value;
+                    AlgorithmSettings.Population = (int)PopulationAmountSlider.Value;
+                    AlgorithmSettings.Elite = (int)(AlgorithmSettings.Population * (EliteAmountSlider.Value / 100.0f));
+                    AlgorithmSettings.MutationChance = (int)MutationAmountSlider.Value;
+
+                    if (mutationSoftRadio.IsChecked ?? false)
                     {
                         AlgorithmSettings.MutationType = MutationType.SOFT;
                     }
@@ -228,14 +260,46 @@ namespace ImageEvolution
                         AlgorithmSettings.MutationType = MutationType.GAUSSIAN;
                     }
 
-                    AlgorithmSettings.MutationChance = (int)MutationAmountSlider.Value;
+                    InsertImageButton.IsEnabled = false;
 
                     circleCheckBox.IsEnabled = false;
                     pentagonCheckBox.IsEnabled = false;
                     rectangleCheckBox.IsEnabled = false;
                     triangleCheckBox.IsEnabled = false;
 
-                    _community.InitializeEvolution(sourceColours);
+                    mutationDynamicRadio.IsEnabled = false;
+                    mutationStaticRadio.IsEnabled = false;
+
+                    mutationSoftRadio.IsEnabled = false;
+                    mutationHardRadio.IsEnabled = false;
+                    mutationMediumRadio.IsEnabled = false;
+                    mutationGaussianRadio.IsEnabled = false;
+
+                    singleParentRadio.IsEnabled = false;
+                    twoParentRadio.IsEnabled = false;
+
+                    EliteAmountSlider.IsEnabled = false;
+                    MutationAmountSlider.IsEnabled = false;
+                    PopulationAmountSlider.IsEnabled = false;
+                    ShapesAmountSlider.IsEnabled = false;
+
+                    eliteAmountTextBox.IsEnabled = false;
+                    mutationAmountTextBox.IsEnabled = false;
+                    populationAmountTextBox.IsEnabled = false;
+                    shapesAmountTextBox.IsEnabled = false;
+
+                    if(twoParentRadio.IsChecked ?? false)
+                    {
+                        generateTwoParent = true;
+                        _community.InitializeEvolution(sourceColours);
+                    }
+                    else
+                    {
+                        generateTwoParent = false;
+                        _oneIndividual.InitializeEvolution(sourceColours);
+                    }
+
+
                     _evolutionInitialized = true;
                 }
 
@@ -257,7 +321,14 @@ namespace ImageEvolution
 
                 try
                 {
-                    GenerateImages();
+                    if(generateTwoParent)
+                    {
+                        GenerateImagesTwoParentReproduction();
+                    }
+                    else
+                    {
+                        GenerateImagesSingleParentReproduction();
+                    }
                 }
                 catch(ThreadInterruptedException ex)
                 {
@@ -279,11 +350,19 @@ namespace ImageEvolution
             }
         }
 
-        private void GenerateImages()
+        private void GenerateImagesTwoParentReproduction()
         {
             while (!_stopButtonLock)
             {
                 _tmpIndividual = _community.Generate();
+            }
+        }
+
+        private void GenerateImagesSingleParentReproduction()
+        {
+            while (!_stopButtonLock)
+            {
+                _tmpIndividual = _oneIndividual.Generate();
             }
         }
 
@@ -296,9 +375,7 @@ namespace ImageEvolution
                     using (Graphics g = Graphics.FromImage(backBuffer))
                     {
                         ImageRenderer.DrawImage(_tmpIndividual, g);
-
                     }
-
                 }
             });
         }
@@ -359,6 +436,13 @@ namespace ImageEvolution
         private void PopulationAmountSlider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
             AlgorithmSettings.Population = (int)PopulationAmountSlider.Value;
+
+            AlgorithmSettings.Elite = (int)(AlgorithmSettings.Population * (EliteAmountSlider.Value / 100.0f));
+
+            if (AlgorithmSettings.Elite == 0)
+            {
+                AlgorithmSettings.Elite = 1;
+            }
         }
 
         private void EliteAmountSlider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
@@ -373,14 +457,12 @@ namespace ImageEvolution
 
         private void ResetButtonClick(object sender, RoutedEventArgs e)
         {
-            Process.Start(Application.ResourceAssembly.Location);
 
-            Application.Current.Shutdown();
         }
 
         private void MutationAmountSlider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
-
+            AlgorithmSettings.MutationChance = (int)MutationAmountSlider.Value;
         }
     }
 }

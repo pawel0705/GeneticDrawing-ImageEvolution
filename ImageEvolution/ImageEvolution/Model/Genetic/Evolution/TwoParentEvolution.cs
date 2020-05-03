@@ -16,7 +16,7 @@ namespace ImageEvolution.Model.Genetic.Evolution
     }
     
 
-     public class GenerationCycle
+     public class TwoParentEvolution
     {
         private Individual[] _populationIndividuals;
         private Individual[] _eliteIndividuals;
@@ -52,6 +52,11 @@ namespace ImageEvolution.Model.Genetic.Evolution
         public Individual Generate()
         {
             _generation++;
+
+            if (AlgorithmSettings.DynamicMutation && (_generation % 100 == 0))
+            {
+                AlgorithmSettings.MutationChance -= 1;
+            }
 
             for (int j = 0; j < AlgorithmSettings.Population; j++)
             {
@@ -189,9 +194,9 @@ namespace ImageEvolution.Model.Genetic.Evolution
 
         private bool WillMutate()
         {
-            if(AlgorithmSettings.MutationChance == 0)
+            if(AlgorithmSettings.MutationChance <= 0)
             {
-                return false;
+                AlgorithmSettings.MutationChance = 1;
             }
 
             if(RandomMutation.RandomIntervalIntegerInclusive(0, 100 - AlgorithmSettings.MutationChance) == 0)

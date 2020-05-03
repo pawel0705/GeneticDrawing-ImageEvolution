@@ -22,5 +22,7 @@ namespace ImageEvolution.Model.Utils
         public static bool PentagonShape = false;
 
         public static MutationType MutationType { get; set; }
+
+        public static bool DynamicMutation { get; set; }
     }
 }
