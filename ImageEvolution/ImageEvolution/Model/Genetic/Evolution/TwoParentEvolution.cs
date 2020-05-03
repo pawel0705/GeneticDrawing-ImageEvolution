@@ -122,11 +122,11 @@ namespace ImageEvolution.Model.Genetic.Evolution
             {
                 if (RandomMutation.RandomIntervalIntegerInclusive(0, 1) == 0)
                 {
-                    individualChild.TriangleShapes.Add(mother.TriangleShapes[i]);
+                    individualChild.TriangleShapes.Add(mother.TriangleShapes[i].CloneShapeChromosome());
                 }
                 else
                 {
-                    individualChild.TriangleShapes.Add(father.TriangleShapes[i]);
+                    individualChild.TriangleShapes.Add(father.TriangleShapes[i].CloneShapeChromosome());
                 }
 
                 if(WillMutate())
@@ -140,11 +140,11 @@ namespace ImageEvolution.Model.Genetic.Evolution
             {
                 if (RandomMutation.RandomIntervalIntegerInclusive(0, 1) == 0)
                 {
-                    individualChild.SquareShapes.Add(mother.SquareShapes[i]);
+                    individualChild.SquareShapes.Add(mother.SquareShapes[i].CloneShapeChromosome());
                 }
                 else
                 {
-                    individualChild.SquareShapes.Add(father.SquareShapes[i]);
+                    individualChild.SquareShapes.Add(father.SquareShapes[i].CloneShapeChromosome());
                 }
 
                 if (WillMutate())
@@ -158,11 +158,11 @@ namespace ImageEvolution.Model.Genetic.Evolution
             {
                 if (RandomMutation.RandomIntervalIntegerInclusive(0, 1) == 0)
                 {
-                    individualChild.ElipseShapes.Add(mother.ElipseShapes[i]);
+                    individualChild.ElipseShapes.Add(mother.ElipseShapes[i].CloneShapeChromosome());
                 }
                 else
                 {
-                    individualChild.ElipseShapes.Add(father.ElipseShapes[i]);
+                    individualChild.ElipseShapes.Add(father.ElipseShapes[i].CloneShapeChromosome());
                 }
 
                 if (WillMutate())
@@ -176,11 +176,11 @@ namespace ImageEvolution.Model.Genetic.Evolution
             {
                 if (RandomMutation.RandomIntervalIntegerInclusive(0, 1) == 0)
                 {
-                    individualChild.PentagonShapes.Add(mother.PentagonShapes[i]);
+                    individualChild.PentagonShapes.Add(mother.PentagonShapes[i].CloneShapeChromosome());
                 }
                 else
                 {
-                    individualChild.PentagonShapes.Add(father.PentagonShapes[i]);
+                    individualChild.PentagonShapes.Add(father.PentagonShapes[i].CloneShapeChromosome());
                 }
 
                 if (WillMutate())

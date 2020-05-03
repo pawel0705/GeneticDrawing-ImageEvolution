@@ -15,21 +15,16 @@ namespace ImageEvolution.Model.Genetic.Evolution
 
         private int _generation = 0;
 
-        Individual _childIndividual;
-
         Individual _parentIndividual;
 
         public void InitializeEvolution(Color[,] sourceIndividual)
         {
-            _childIndividual = new Individual();
-
             _parentIndividual = new Individual();
+            _parentIndividual.Initialize();
 
             _destinationIndividual = sourceIndividual;
 
             _evolutionFitness = new EvolutionFitness(AlgorithmSettings.ImageWidth, AlgorithmSettings.ImageHeight);
-
-            _parentIndividual.Initialize();
         }
 
         public Individual Generate()
@@ -44,11 +39,11 @@ namespace ImageEvolution.Model.Genetic.Evolution
             AlgorithmSettings.Population = 1;
             AlgorithmSettings.Elite = 1;
 
-            _childIndividual = new Individual();
+            var _childIndividual = new Individual();
 
             for(int i = 0; i < _parentIndividual.TriangleShapes.Count; i++)
             {
-                _childIndividual.TriangleShapes.Add(_parentIndividual.TriangleShapes[i]);
+                _childIndividual.TriangleShapes.Add(_parentIndividual.TriangleShapes[i].CloneShapeChromosome());
 
                 if (WillMutate())
                 {
@@ -58,7 +53,7 @@ namespace ImageEvolution.Model.Genetic.Evolution
 
             for (int i = 0; i < _parentIndividual.SquareShapes.Count; i++)
             {
-                _childIndividual.SquareShapes.Add(_parentIndividual.SquareShapes[i]);
+                _childIndividual.SquareShapes.Add(_parentIndividual.SquareShapes[i].CloneShapeChromosome());
 
                 if (WillMutate())
                 {
@@ -68,7 +63,7 @@ namespace ImageEvolution.Model.Genetic.Evolution
 
             for (int i = 0; i < _parentIndividual.ElipseShapes.Count; i++)
             {
-                _childIndividual.ElipseShapes.Add(_parentIndividual.ElipseShapes[i]);
+                _childIndividual.ElipseShapes.Add(_parentIndividual.ElipseShapes[i].CloneShapeChromosome());
 
                 if (WillMutate())
                 {
@@ -78,7 +73,7 @@ namespace ImageEvolution.Model.Genetic.Evolution
 
             for (int i = 0; i < _parentIndividual.PentagonShapes.Count; i++)
             {
-                _childIndividual.PentagonShapes.Add(_parentIndividual.PentagonShapes[i]);
+                _childIndividual.PentagonShapes.Add(_parentIndividual.PentagonShapes[i].CloneShapeChromosome());
 
                 if (WillMutate())
                 {
