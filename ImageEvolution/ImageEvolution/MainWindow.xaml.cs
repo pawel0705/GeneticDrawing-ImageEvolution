@@ -29,8 +29,12 @@ namespace ImageEvolution
 {
     public partial class MainWindow : Window
     {
+        private EvolutionWindow evolutionWindow;
+
         public MainWindow()
         {
+            evolutionWindow = new EvolutionWindow();
+
             InitializeComponent();
         }
 
@@ -54,7 +58,7 @@ namespace ImageEvolution
             {
                 case 0:
                     GridWindow.Children.Clear();
-                    GridWindow.Children.Add(new EvolutionWindow());
+                    GridWindow.Children.Add(evolutionWindow);
                     break;
                 default:
                     break;

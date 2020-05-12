@@ -1,9 +1,6 @@
 ﻿using ImageEvolution.Model.Settings;
 using ImageEvolution.Model.Utils;
-using System;
-using System.Collections.Generic;
 using System.Drawing;
-using System.Text;
 
 namespace ImageEvolution.Model.Genetic.Evolution
 {
@@ -24,20 +21,20 @@ namespace ImageEvolution.Model.Genetic.Evolution
 
             _destinationIndividual = sourceIndividual;
 
-            _evolutionFitness = new EvolutionFitness(AlgorithmSettings.ImageWidth, AlgorithmSettings.ImageHeight);
+            _evolutionFitness = new EvolutionFitness(AlgorithmInformation.ImageWidth, AlgorithmInformation.ImageHeight);
         }
 
         public Individual Generate()
         {
             _generation++;
 
-            if (AlgorithmSettings.DynamicMutation && (_generation % 10000 == 0))
+            if (AlgorithmInformation.DynamicMutation && (_generation % 10000 == 0))
             {
-                AlgorithmSettings.MutationChance -= 1;
+                AlgorithmInformation.MutationChance -= 1;
             }
 
-            AlgorithmSettings.Population = 1;
-            AlgorithmSettings.Elite = 1;
+            AlgorithmInformation.Population = 1;
+            AlgorithmInformation.Elite = 1;
 
             var _childIndividual = new Individual();
 
@@ -88,18 +85,22 @@ namespace ImageEvolution.Model.Genetic.Evolution
             {
                 _parentIndividual = _childIndividual.CloneIndividual();
             }
+            else
+            {
+                AlgorithmInformation.KilledChilds++;
+            }
 
             return _childIndividual;
         }
 
         private bool WillMutate()
         {
-            if (AlgorithmSettings.MutationChance <= 0)
+            if (AlgorithmInformation.MutationChance <= 0)
             {
-                AlgorithmSettings.MutationChance = 1;
+                AlgorithmInformation.MutationChance = 1;
             }
 
-            if (RandomMutation.RandomIntervalIntegerInclusive(0, 100 - AlgorithmSettings.MutationChance) == 0)
+            if (RandomMutation.RandomIntervalIntegerInclusive(0, 100 - AlgorithmInformation.MutationChance) == 0)
             {
                 return true;
             }

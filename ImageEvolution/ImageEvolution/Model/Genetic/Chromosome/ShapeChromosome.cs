@@ -1,10 +1,7 @@
 ﻿using ImageEvolution.Model.Genetic.DNA;
 using ImageEvolution.Model.Genetic.Evolution;
 using ImageEvolution.Model.Settings;
-using System;
 using System.Collections.Generic;
-using System.Text;
-using System.Windows.Shapes;
 
 using ImageEvolution.Model.Utils;
 
@@ -35,10 +32,11 @@ namespace ImageEvolution.Model.Genetic.Chromosome
 
         public ShapeChromosome CloneShapeChromosome()
         {
-            var shape = new ShapeChromosome(_shapeType);
-
-            shape.PositionsShape = new List<PositionDNA>();
-            shape.ColourShape = (ColourDNA)ColourShape.CloneDNA();
+            var shape = new ShapeChromosome(_shapeType)
+            {
+                PositionsShape = new List<PositionDNA>(),
+                ColourShape = (ColourDNA)ColourShape.CloneDNA()
+            };
 
             foreach (var position in PositionsShape)
             {
@@ -50,7 +48,6 @@ namespace ImageEvolution.Model.Genetic.Chromosome
 
         private void CreateVerticlePositions()
         {
-
             if (_shapeType == ShapeType.TRIANGLE)
             {
                 var pivotPoint = new PositionDNA();
@@ -59,9 +56,11 @@ namespace ImageEvolution.Model.Genetic.Chromosome
 
                 for (int i = 0; i < 2; i++)
                 {
-                    var position = new PositionDNA();
-                    position.PositionX = pivotPoint.PositionX;
-                    position.PositionY = pivotPoint.PositionY;
+                    var position = new PositionDNA
+                    {
+                        PositionX = pivotPoint.PositionX,
+                        PositionY = pivotPoint.PositionY
+                    };
 
                     position.SoftMutation();
 
@@ -74,23 +73,29 @@ namespace ImageEvolution.Model.Genetic.Chromosome
                 position0.InitializeDNA();
                 PositionsShape.Add(position0);
 
-                var position1 = new PositionDNA();
-                position1.PositionX = position0.PositionX;
-                position1.PositionY = position0.PositionY;
+                var position1 = new PositionDNA
+                {
+                    PositionX = position0.PositionX,
+                    PositionY = position0.PositionY
+                };
                 position1.SoftMutation();
                 position1.PositionY = position0.PositionY;
                 PositionsShape.Add(position1);
 
-                var position2 = new PositionDNA();
-                position2.PositionX = position1.PositionX;
-                position2.PositionY = position1.PositionY;
+                var position2 = new PositionDNA
+                {
+                    PositionX = position1.PositionX,
+                    PositionY = position1.PositionY
+                };
                 position2.SoftMutation();
                 position2.PositionX = position1.PositionX;
                 PositionsShape.Add(position2);
 
-                var position3 = new PositionDNA();
-                position3.PositionX = position0.PositionX;
-                position3.PositionY = position2.PositionY;
+                var position3 = new PositionDNA
+                {
+                    PositionX = position0.PositionX,
+                    PositionY = position2.PositionY
+                };
                 PositionsShape.Add(position3);
             }
             else if(_shapeType == ShapeType.CIRCLE)
@@ -100,9 +105,11 @@ namespace ImageEvolution.Model.Genetic.Chromosome
 
                 PositionsShape.Add(pivotPoint);
 
-                var position = new PositionDNA();
-                position.PositionX = 10;
-                position.PositionY = 10;
+                var position = new PositionDNA
+                {
+                    PositionX = 10,
+                    PositionY = 10
+                };
 
                 position.SoftMutation();
 
@@ -116,9 +123,11 @@ namespace ImageEvolution.Model.Genetic.Chromosome
 
                 for (int i = 0; i < 4; i++)
                 {
-                    var position = new PositionDNA();
-                    position.PositionX = pivotPoint.PositionX;
-                    position.PositionY = pivotPoint.PositionY;
+                    var position = new PositionDNA
+                    {
+                        PositionX = pivotPoint.PositionX,
+                        PositionY = pivotPoint.PositionY
+                    };
 
                     position.SoftMutation();
 
@@ -130,7 +139,7 @@ namespace ImageEvolution.Model.Genetic.Chromosome
 
         public void MutateChromosome()
         {
-            switch (AlgorithmSettings.MutationType)
+            switch (AlgorithmInformation.MutationType)
             {
                 case MutationType.SOFT:
                     SoftMutation();
@@ -152,7 +161,7 @@ namespace ImageEvolution.Model.Genetic.Chromosome
         {
             var position = RandomMutation.RandomIntervalIntegerInclusive(0, PositionsShape.Count - 1);
 
-            switch(AlgorithmSettings.MutationType)
+            switch(AlgorithmInformation.MutationType)
             {
                 case MutationType.SOFT:
                     PositionsShape[position].SoftMutation();
@@ -166,6 +175,9 @@ namespace ImageEvolution.Model.Genetic.Chromosome
                         PositionsShape[i].HardMutation();
                     }
                     break;
+                case MutationType.GAUSSIAN:
+                    PositionsShape[position].GaussianMutation();
+                    break;
             }
         }
 
@@ -173,13 +185,16 @@ namespace ImageEvolution.Model.Genetic.Chromosome
         {
             var position = RandomMutation.RandomIntervalIntegerInclusive(0, PositionsShape.Count - 1);
 
-            switch (AlgorithmSettings.MutationType)
+            switch (AlgorithmInformation.MutationType)
             {
                 case MutationType.SOFT:
                     PositionsShape[position].SoftMutation();
                     break;
                 case MutationType.MEDIUM:
                     PositionsShape[position].MediumMutation();
+                    break;
+                case MutationType.GAUSSIAN:
+                    PositionsShape[position].GaussianMutation();
                     break;
                 case MutationType.HARD:
                     PositionsShape[0].HardMutation();
@@ -192,7 +207,7 @@ namespace ImageEvolution.Model.Genetic.Chromosome
                     break;
             }
 
-            if(AlgorithmSettings.MutationType != MutationType.HARD)
+            if(AlgorithmInformation.MutationType != MutationType.HARD)
             {
                 switch (position)
                 {
@@ -220,13 +235,16 @@ namespace ImageEvolution.Model.Genetic.Chromosome
         {
             var position = RandomMutation.RandomIntervalIntegerInclusive(0, PositionsShape.Count - 1);
 
-            switch (AlgorithmSettings.MutationType)
+            switch (AlgorithmInformation.MutationType)
             {
                 case MutationType.SOFT:
                     PositionsShape[position].SoftMutation();
                     break;
                 case MutationType.MEDIUM:
                     PositionsShape[position].MediumMutation();
+                    break;
+                case MutationType.GAUSSIAN:
+                    PositionsShape[position].GaussianMutation();
                     break;
                 case MutationType.HARD:
                     for (int i = 0; i < PositionsShape.Count; i++)
@@ -241,13 +259,16 @@ namespace ImageEvolution.Model.Genetic.Chromosome
         {
             var position = RandomMutation.RandomIntervalIntegerInclusive(0, PositionsShape.Count - 1);
 
-            switch (AlgorithmSettings.MutationType)
+            switch (AlgorithmInformation.MutationType)
             {
                 case MutationType.SOFT:
                     PositionsShape[position].SoftMutation();
                     break;
                 case MutationType.MEDIUM:
                     PositionsShape[position].MediumMutation();
+                    break;
+                case MutationType.GAUSSIAN:
+                    PositionsShape[position].GaussianMutation();
                     break;
                 case MutationType.HARD:
                     for (int i = 0; i < PositionsShape.Count; i++)
@@ -312,12 +333,21 @@ namespace ImageEvolution.Model.Genetic.Chromosome
         {
             ColourShape.HardMutation();
             MutatePosition();
-
         }
 
         private void GaussianMutation()
         {
+            var colourOrPosition = RandomMutation.RandomIntervalIntegerInclusive(0, 1);
 
+            switch (colourOrPosition)
+            {
+                case 0:
+                    ColourShape.GaussianMutation();
+                    break;
+                case 1:
+                    MutatePosition();
+                    break;
+            }
         }
     }
 }

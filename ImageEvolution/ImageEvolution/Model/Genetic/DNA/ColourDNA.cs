@@ -1,8 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 
 using ImageEvolution.Model.Settings;
+using ImageEvolution.Model.Utils;
 
 namespace ImageEvolution.Model.Genetic.DNA
 {
@@ -36,22 +35,19 @@ namespace ImageEvolution.Model.Genetic.DNA
         {
             var colourMutation = RandomMutation.RandomIntervalIntegerInclusive(0, 4);
 
-            byte deltaValue = 25;
-
-
             switch (colourMutation)
             {
                 case 0:
-                    RedColour = RandomMutation.RandomColour((byte)(RedColour - deltaValue), (byte)(RedColour + deltaValue));
+                    RedColour = RandomMutation.RandomColour((byte)(RedColour - AlgorithmInformation.SmallDeltaValue()), (byte)(RedColour + AlgorithmInformation.SmallDeltaValue()));
                     break;
                 case 1:
-                    GreenColour = RandomMutation.RandomColour((byte)(GreenColour - deltaValue), (byte)(GreenColour + deltaValue));
+                    GreenColour = RandomMutation.RandomColour((byte)(GreenColour - AlgorithmInformation.SmallDeltaValue()), (byte)(GreenColour + AlgorithmInformation.SmallDeltaValue()));
                     break;
                 case 2:
-                    BlueColour = RandomMutation.RandomColour((byte)(BlueColour - deltaValue), (byte)(BlueColour + deltaValue));
+                    BlueColour = RandomMutation.RandomColour((byte)(BlueColour - AlgorithmInformation.SmallDeltaValue()), (byte)(BlueColour + AlgorithmInformation.SmallDeltaValue()));
                     break;
                 case 3:
-                    AlphaColour = RandomMutation.RandomColour((byte)(BlueColour - deltaValue), (byte)(BlueColour + deltaValue));
+                    AlphaColour = RandomMutation.RandomColour((byte)(BlueColour - AlgorithmInformation.SmallDeltaValue()), (byte)(BlueColour + AlgorithmInformation.SmallDeltaValue()));
                     break;
             }
 
@@ -88,7 +84,23 @@ namespace ImageEvolution.Model.Genetic.DNA
 
         public void GaussianMutation()
         {
-            throw new NotImplementedException();
+            var colourMutation = RandomMutation.RandomIntervalIntegerInclusive(0, 4);
+
+            switch (colourMutation)
+            {
+                case 1:
+                    RedColour += (byte)RandomMutation.GaussianRandom(Byte.MaxValue);
+                    break;
+                case 2:
+                    GreenColour += (byte)RandomMutation.GaussianRandom(Byte.MaxValue);
+                    break;
+                case 3:
+                    BlueColour += (byte)RandomMutation.GaussianRandom(Byte.MaxValue);
+                    break;
+                case 4:
+                    AlphaColour += (byte)RandomMutation.GaussianRandom(Byte.MaxValue);
+                    break;
+            }
         }
     }
 }

@@ -1,22 +1,12 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
-using System.Text;
-
-using ImageEvolution.Model.Genetic.DNA;
 using ImageEvolution.Model.Settings;
 using ImageEvolution.Model.Utils;
 
 namespace ImageEvolution.Model.Genetic.Evolution
 {
-    public class IndividualEventArgs : EventArgs
-    {
-        public Individual individual { get; set; }
-    }
-    
-
-     public class TwoParentEvolution
+    public class TwoParentEvolution
     {
         private Individual[] _populationIndividuals;
         private Individual[] _eliteIndividuals;
@@ -29,16 +19,16 @@ namespace ImageEvolution.Model.Genetic.Evolution
 
         public void InitializeEvolution(Color[,] sourceIndividual)
         {
-            _populationIndividuals = new Individual[AlgorithmSettings.Population];
-            _eliteIndividuals = new Individual[AlgorithmSettings.Elite];
+            _populationIndividuals = new Individual[AlgorithmInformation.Population];
+            _eliteIndividuals = new Individual[AlgorithmInformation.Elite];
 
             _destinationIndividual = sourceIndividual;
 
-            _evolutionFitness = new EvolutionFitness(Utils.AlgorithmSettings.ImageWidth, Utils.AlgorithmSettings.ImageHeight);
+            _evolutionFitness = new EvolutionFitness(Utils.AlgorithmInformation.ImageWidth, Utils.AlgorithmInformation.ImageHeight);
 
             Individual individual;
 
-            for (int i = 0; i < AlgorithmSettings.Population; i++)
+            for (int i = 0; i < AlgorithmInformation.Population; i++)
             {
                 individual = new Individual();
                 individual.Initialize();
@@ -48,31 +38,30 @@ namespace ImageEvolution.Model.Genetic.Evolution
 
         }
 
-
         public Individual Generate()
         {
             _generation++;
 
-            if (AlgorithmSettings.DynamicMutation && (_generation % 100 == 0))
+            if (AlgorithmInformation.DynamicMutation && (_generation % 100 == 0))
             {
-                AlgorithmSettings.MutationChance -= 1;
+                AlgorithmInformation.MutationChance -= 1;
             }
 
-            for (int j = 0; j < AlgorithmSettings.Population; j++)
+            for (int j = 0; j < AlgorithmInformation.Population; j++)
             {
                 _populationIndividuals[j].Generation = _generation;
                 _evolutionFitness.CompareImages(_populationIndividuals[j], _destinationIndividual);
             }
 
-            Individual[] sortedGeneration = new Individual[AlgorithmSettings.Population];
-            for(int j = 0; j < AlgorithmSettings.Population; j++)
+            Individual[] sortedGeneration = new Individual[AlgorithmInformation.Population];
+            for (int j = 0; j < AlgorithmInformation.Population; j++)
             {
                 sortedGeneration[j] = _populationIndividuals[j].CloneIndividual();
             }
 
             sortedGeneration = sortedGeneration.OrderByDescending(i => i.Adaptation).ToArray();
 
-            for(int j = 0; j < AlgorithmSettings.Elite; j++)
+            for (int j = 0; j < AlgorithmInformation.Elite; j++)
             {
                 _eliteIndividuals[j] = sortedGeneration[j];
             }
@@ -81,32 +70,30 @@ namespace ImageEvolution.Model.Genetic.Evolution
             int mother = 0;
             int father = 1;
 
-            while (i < AlgorithmSettings.Population)
+            while (i < AlgorithmInformation.Population)
             {
                 _populationIndividuals[i] = Reproduct(_eliteIndividuals[mother], _eliteIndividuals[father]);
 
                 mother++;
-                if(mother >= AlgorithmSettings.Elite)
+                if (mother >= AlgorithmInformation.Elite)
                 {
                     father++;
                     mother = 0;
                 }
 
-                if(father >= AlgorithmSettings.Elite)
+                if (father >= AlgorithmInformation.Elite)
                 {
                     father = 0;
                 }
 
                 i++;
-                if(i > AlgorithmSettings.Population)
+                if (i > AlgorithmInformation.Population)
                 {
                     break;
                 }
             }
 
-            
-
-            EventIndividualFinished(_eliteIndividuals[0]);
+            AlgorithmInformation.KilledChilds += AlgorithmInformation.Population - AlgorithmInformation.Elite;
 
             return _eliteIndividuals[0];
         }
@@ -115,7 +102,6 @@ namespace ImageEvolution.Model.Genetic.Evolution
         private Individual Reproduct(Individual mother, Individual father)
         {
             var individualChild = new Individual();
-
 
             // triangle shapes
             for (int i = 0; i < mother.TriangleShapes.Count; i++)
@@ -129,7 +115,7 @@ namespace ImageEvolution.Model.Genetic.Evolution
                     individualChild.TriangleShapes.Add(father.TriangleShapes[i].CloneShapeChromosome());
                 }
 
-                if(WillMutate())
+                if (WillMutate())
                 {
                     individualChild.TriangleShapes[i].MutateChromosome();
                 }
@@ -194,24 +180,17 @@ namespace ImageEvolution.Model.Genetic.Evolution
 
         private bool WillMutate()
         {
-            if(AlgorithmSettings.MutationChance <= 0)
+            if (AlgorithmInformation.MutationChance <= 0)
             {
-                AlgorithmSettings.MutationChance = 1;
+                AlgorithmInformation.MutationChance = 1;
             }
 
-            if(RandomMutation.RandomIntervalIntegerInclusive(0, 100 - AlgorithmSettings.MutationChance) == 0)
+            if (RandomMutation.RandomIntervalIntegerInclusive(0, 100 - AlgorithmInformation.MutationChance) == 0)
             {
                 return true;
             }
 
             return false;
-        }
-
-        public event EventHandler<IndividualEventArgs> IndividualCreated;
-
-        protected virtual void EventIndividualFinished(Individual individual)
-        {
-            IndividualCreated?.Invoke(this, new IndividualEventArgs() { individual = individual });
         }
     }
 }

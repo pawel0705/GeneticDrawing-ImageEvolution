@@ -1,32 +1,16 @@
-﻿using ImageEvolution.Model.Genetic.DNA;
-using ImageEvolution.Model.Genetic.Evolution;
+﻿using ImageEvolution.Model.Genetic.Evolution;
 using ImageEvolution.Model.Utils;
 using System;
-using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Imaging;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
-
 using System.Threading;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Interop;
-using System.Windows.Media;
 using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
-
-using static ImageEvolution.ImageOpener;
 using System.Windows.Threading;
 using System.IO;
-using MaterialDesignThemes.Wpf;
-using System.Diagnostics;
-using System.Reflection;
+
+using static ImageEvolution.ImageOpener;
 
 namespace ImageEvolution
 {
@@ -37,13 +21,12 @@ namespace ImageEvolution
         private SingleParentEvolution _oneIndividual;
 
         private bool _generateButtonLock = false;
-        private bool _insertImageButtonLock = false;
         private bool _stopButtonLock = false;
 
         private bool _newBestIndividual = false;
         private bool _evolutionInitialized = false;
 
-        private int _milisecondsTime = 10;
+        private readonly int _milisecondsTime = 10;
         private int _seconds = 0;
         private int _minutes = 0;
 
@@ -51,7 +34,7 @@ namespace ImageEvolution
         private Individual _topGenerationIndividual;
         private Individual _bestOfAllIndividual;
 
-        private System.Drawing.Color[,] sourceColours;
+        private Color[,] sourceColours;
 
         private DispatcherTimer _refreshImagesTimer;
         private DispatcherTimer _timeTimer;
@@ -64,7 +47,6 @@ namespace ImageEvolution
         {
             InitializeComponent();
 
-            // this.community.IndividualCreated += this.EventIndividualFinished;
             InitializeObjects();
             InitializeTimers();
             InitializeButtons();
@@ -89,13 +71,17 @@ namespace ImageEvolution
 
         private void InitializeTimers()
         {
-            _refreshImagesTimer = new DispatcherTimer();
-            _refreshImagesTimer.Interval = TimeSpan.FromMilliseconds(_milisecondsTime);
+            _refreshImagesTimer = new DispatcherTimer
+            {
+                Interval = TimeSpan.FromMilliseconds(_milisecondsTime)
+            };
             _refreshImagesTimer.Tick += ShowDataImages;
             _refreshImagesTimer.Start();
 
-            _timeTimer = new DispatcherTimer();
-            _timeTimer.Interval = TimeSpan.FromSeconds(1);
+            _timeTimer = new DispatcherTimer
+            {
+                Interval = TimeSpan.FromSeconds(1)
+            };
             _timeTimer.Tick += UpdateTime;
         }
 
@@ -126,8 +112,6 @@ namespace ImageEvolution
                 _minutes++;
                 this.elapsedTime.Content = "Elapsed time: " + _minutes + ":" + "00";
             }
-
-
         }
 
         private void ShowDataImages(object sender, EventArgs e)
@@ -182,10 +166,12 @@ namespace ImageEvolution
             this.actualGeneticImage.Source = bitmap;
             this.generation.Content = "Generation: " + _topGenerationIndividual.Generation.ToString();
             this.currentFitness.Content = "Current fitness: " + Math.Round(_topGenerationIndividual.Adaptation, 2).ToString() + "%";
-            this.populationLabel.Content = "Population: " + AlgorithmSettings.Population;
-            this.eliteLabel.Content = "Elite: " + AlgorithmSettings.Elite;
-            this.mutationTypeLabel.Content = "Mutation type: " + AlgorithmSettings.MutationType.ToString();
-            this.mutationChanceLabel.Content = "Mutation chance: " + AlgorithmSettings.MutationChance.ToString() + "%";
+            this.populationLabel.Content = "Population: " + AlgorithmInformation.Population;
+            this.eliteLabel.Content = "Elite: " + AlgorithmInformation.Elite;
+            this.mutationTypeLabel.Content = "Mutation type: " + AlgorithmInformation.MutationType.ToString();
+            this.mutationChanceLabel.Content = "Mutation chance: " + AlgorithmInformation.MutationChance.ToString() + "%";
+            this.killedChildsLabel.Content = "Killed childs: " + AlgorithmInformation.KilledChilds;
+
 
             if(this.mutationDynamicRadio.IsChecked ?? false)
             {
@@ -225,68 +211,74 @@ namespace ImageEvolution
             }
         }
 
+        private void EnableUI(bool enable)
+        {
+            InsertImageButton.IsEnabled = enable;
+
+            circleCheckBox.IsEnabled = enable;
+            pentagonCheckBox.IsEnabled = enable;
+            rectangleCheckBox.IsEnabled = enable;
+            triangleCheckBox.IsEnabled = enable;
+
+            mutationDynamicRadio.IsEnabled = enable;
+            mutationStaticRadio.IsEnabled = enable;
+
+            mutationSoftRadio.IsEnabled = enable;
+            mutationHardRadio.IsEnabled = enable;
+            mutationMediumRadio.IsEnabled = enable;
+            mutationGaussianRadio.IsEnabled = enable;
+
+            singleParentRadio.IsEnabled = enable;
+            twoParentRadio.IsEnabled = enable;
+
+            EliteAmountSlider.IsEnabled = enable;
+            MutationAmountSlider.IsEnabled = enable;
+            PopulationAmountSlider.IsEnabled = enable;
+            ShapesAmountSlider.IsEnabled = enable;
+
+            eliteAmountTextBox.IsEnabled = enable;
+            mutationAmountTextBox.IsEnabled = enable;
+            populationAmountTextBox.IsEnabled = enable;
+            shapesAmountTextBox.IsEnabled = enable;
+
+        }
+
         private void Button_Click(object sender, RoutedEventArgs e)
         {
             if (_generateButtonLock == false)
             {
                 if(_evolutionInitialized == false)
                 {
-                    AlgorithmSettings.CircleShape = circleCheckBox.IsChecked ?? false;
-                    AlgorithmSettings.PentagonShape = pentagonCheckBox.IsChecked ?? false;
-                    AlgorithmSettings.SquareShape = rectangleCheckBox.IsChecked ?? false;
-                    AlgorithmSettings.TriangleShape = triangleCheckBox.IsChecked ?? false;
+                    AlgorithmInformation.CircleShape = circleCheckBox.IsChecked ?? false;
+                    AlgorithmInformation.PentagonShape = pentagonCheckBox.IsChecked ?? false;
+                    AlgorithmInformation.SquareShape = rectangleCheckBox.IsChecked ?? false;
+                    AlgorithmInformation.TriangleShape = triangleCheckBox.IsChecked ?? false;
 
-                    AlgorithmSettings.DynamicMutation = mutationDynamicRadio.IsChecked ?? false;
+                    AlgorithmInformation.DynamicMutation = mutationDynamicRadio.IsChecked ?? false;
 
-                    AlgorithmSettings.ShapesAmount = (int)ShapesAmountSlider.Value;
-                    AlgorithmSettings.Population = (int)PopulationAmountSlider.Value;
-                    AlgorithmSettings.Elite = (int)(AlgorithmSettings.Population * (EliteAmountSlider.Value / 100.0f));
-                    AlgorithmSettings.MutationChance = (int)MutationAmountSlider.Value;
+                    AlgorithmInformation.ShapesAmount = (int)ShapesAmountSlider.Value;
+                    AlgorithmInformation.Population = (int)PopulationAmountSlider.Value;
+                    AlgorithmInformation.Elite = (int)(AlgorithmInformation.Population * (EliteAmountSlider.Value / 100.0f));
+                    AlgorithmInformation.MutationChance = (int)MutationAmountSlider.Value;
 
                     if (mutationSoftRadio.IsChecked ?? false)
                     {
-                        AlgorithmSettings.MutationType = MutationType.SOFT;
+                        AlgorithmInformation.MutationType = MutationType.SOFT;
                     }
                     else if(mutationMediumRadio.IsChecked ?? false)
                     {
-                        AlgorithmSettings.MutationType = MutationType.MEDIUM;
+                        AlgorithmInformation.MutationType = MutationType.MEDIUM;
                     }
                     else if(mutationHardRadio.IsChecked ?? false)
                     {
-                        AlgorithmSettings.MutationType = MutationType.HARD;
+                        AlgorithmInformation.MutationType = MutationType.HARD;
                     }
                     else
                     {
-                        AlgorithmSettings.MutationType = MutationType.GAUSSIAN;
+                        AlgorithmInformation.MutationType = MutationType.GAUSSIAN;
                     }
 
-                    InsertImageButton.IsEnabled = false;
-
-                    circleCheckBox.IsEnabled = false;
-                    pentagonCheckBox.IsEnabled = false;
-                    rectangleCheckBox.IsEnabled = false;
-                    triangleCheckBox.IsEnabled = false;
-
-                    mutationDynamicRadio.IsEnabled = false;
-                    mutationStaticRadio.IsEnabled = false;
-
-                    mutationSoftRadio.IsEnabled = false;
-                    mutationHardRadio.IsEnabled = false;
-                    mutationMediumRadio.IsEnabled = false;
-                    mutationGaussianRadio.IsEnabled = false;
-
-                    singleParentRadio.IsEnabled = false;
-                    twoParentRadio.IsEnabled = false;
-
-                    EliteAmountSlider.IsEnabled = false;
-                    MutationAmountSlider.IsEnabled = false;
-                    PopulationAmountSlider.IsEnabled = false;
-                    ShapesAmountSlider.IsEnabled = false;
-
-                    eliteAmountTextBox.IsEnabled = false;
-                    mutationAmountTextBox.IsEnabled = false;
-                    populationAmountTextBox.IsEnabled = false;
-                    shapesAmountTextBox.IsEnabled = false;
+                    EnableUI(false);
 
                     if(twoParentRadio.IsChecked ?? false)
                     {
@@ -366,23 +358,9 @@ namespace ImageEvolution
             }
         }
 
-        public void EventIndividualFinished(object sender, IndividualEventArgs e)
-        {
-            Dispatcher.Invoke(delegate
-            {
-                using (var backBuffer = new Bitmap(_originalBitmap.Width, _originalBitmap.Height))
-                {
-                    using (Graphics g = Graphics.FromImage(backBuffer))
-                    {
-                        ImageRenderer.DrawImage(_tmpIndividual, g);
-                    }
-                }
-            });
-        }
-
         private void OriginalImageColours()
         {
-            sourceColours = new System.Drawing.Color[_originalBitmap.Width, _originalBitmap.Height];
+            sourceColours = new Color[_originalBitmap.Width, _originalBitmap.Height];
 
             for (int i = 0; i < _originalBitmap.Width; i++)
             {
@@ -404,8 +382,8 @@ namespace ImageEvolution
                 this.originalImage.Source = ImageOpener.Bitmap2BitmapImage(_originalBitmap);
                 OriginalImageColours();
 
-                AlgorithmSettings.ImageWidth = _originalBitmap.Width;
-                AlgorithmSettings.ImageHeight = _originalBitmap.Height;
+                AlgorithmInformation.ImageWidth = _originalBitmap.Width;
+                AlgorithmInformation.ImageHeight = _originalBitmap.Height;
 
                 this.GenerateButton.IsEnabled = true;
                 this._generateButtonLock = false;
@@ -430,39 +408,105 @@ namespace ImageEvolution
 
         private void ShapesAmountSlider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
-            AlgorithmSettings.ShapesAmount = (int)ShapesAmountSlider.Value;
+            AlgorithmInformation.ShapesAmount = (int)ShapesAmountSlider.Value;
         }
 
         private void PopulationAmountSlider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
-            AlgorithmSettings.Population = (int)PopulationAmountSlider.Value;
+            AlgorithmInformation.Population = (int)PopulationAmountSlider.Value;
 
-            AlgorithmSettings.Elite = (int)(AlgorithmSettings.Population * (EliteAmountSlider.Value / 100.0f));
+            AlgorithmInformation.Elite = (int)(AlgorithmInformation.Population * (EliteAmountSlider.Value / 100.0f));
 
-            if (AlgorithmSettings.Elite == 0)
+            if (AlgorithmInformation.Elite == 0)
             {
-                AlgorithmSettings.Elite = 1;
+                AlgorithmInformation.Elite = 1;
             }
         }
 
         private void EliteAmountSlider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
-            AlgorithmSettings.Elite = (int)(AlgorithmSettings.Population * (EliteAmountSlider.Value / 100.0f));
+            AlgorithmInformation.Elite = (int)(AlgorithmInformation.Population * (EliteAmountSlider.Value / 100.0f));
 
-            if(AlgorithmSettings.Elite == 0)
+            if(AlgorithmInformation.Elite == 0)
             {
-                AlgorithmSettings.Elite = 1;
+                AlgorithmInformation.Elite = 1;
             }
         }
 
         private void ResetButtonClick(object sender, RoutedEventArgs e)
         {
+            _stopButtonLock = true;
+            StopButton.IsEnabled = false;
+            _generateButtonLock = false;
 
-        }
+            _timeTimer.Stop();
+
+            RemoveThread();
+            EnableUI(true);
+
+            this.actualGeneticImage.Source = null;
+            this.bestGeneticImage.Source = null;
+            this.originalImage.Source = null;
+
+            this.generation.Content = "Generation: 0";
+            this.currentFitness.Content = "Current fitness: 0%";
+            this.populationLabel.Content = "Population: 0";
+            this.eliteLabel.Content = "Elite: 0";
+            this.mutationTypeLabel.Content = "Mutation type: -";
+            this.mutationChanceLabel.Content = "Mutation chance: 0%";
+            this.killedChildsLabel.Content = "Killed childs: 0";
+            this.dinamicallyMutationLabel.Content = "Dynamic mutation: -";
+            this.reproductionTypeLabel.Content = "Reproduction: -";
+            this.bestFitness.Content = "Best fitness: 0%";
+
+            this._seconds = 0;
+            this._minutes = 0;
+            this.elapsedTime.Content = "Elapsed time: 0:00";
+
+            this._originalBitmap = null;
+
+            circleCheckBox.IsChecked = false;
+            pentagonCheckBox.IsChecked = false;
+            rectangleCheckBox.IsChecked = false;
+            triangleCheckBox.IsChecked = false;
+
+            mutationDynamicRadio.IsChecked = false;
+            mutationStaticRadio.IsChecked = false;
+
+            mutationSoftRadio.IsChecked = false;
+            mutationHardRadio.IsChecked = false;
+            mutationMediumRadio.IsChecked = false;
+            mutationGaussianRadio.IsChecked = false;
+
+            singleParentRadio.IsChecked = false;
+            twoParentRadio.IsChecked = false;
+
+            _evolutionInitialized = false;
+            _newBestIndividual = true;
+
+            AlgorithmInformation.DynamicMutation = false;
+            AlgorithmInformation.Elite = 0;
+            AlgorithmInformation.ImageHeight = 0;
+            AlgorithmInformation.ImageWidth = 0;
+            AlgorithmInformation.KilledChilds = 0;
+            AlgorithmInformation.MutationChance = 0;
+            AlgorithmInformation.MutationType = MutationType.VOID;
+            AlgorithmInformation.Population = 0;
+            AlgorithmInformation.SquareShape = false;
+            AlgorithmInformation.TriangleShape = false;
+            AlgorithmInformation.PentagonShape = false;
+            AlgorithmInformation.CircleShape = false;
+
+            InitializeObjects();
+
+            _tmpIndividual = null;
+            _topGenerationIndividual = null;
+            _bestOfAllIndividual = null;
+    }
 
         private void MutationAmountSlider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
-            AlgorithmSettings.MutationChance = (int)MutationAmountSlider.Value;
+            AlgorithmInformation.MutationChance = (int)MutationAmountSlider.Value;
         }
     }
 }

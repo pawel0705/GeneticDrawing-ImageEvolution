@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Windows.Shapes;
-using ImageEvolution.Model.Genetic.Chromosome;
-using ImageEvolution.Model.Settings;
+﻿using ImageEvolution.Model.Settings;
 using ImageEvolution.Model.Utils;
 
 namespace ImageEvolution.Model.Genetic.DNA
@@ -15,8 +10,8 @@ namespace ImageEvolution.Model.Genetic.DNA
 
         public void InitializeDNA()
         {
-            PositionX = RandomMutation.RandomPosition(0, AlgorithmSettings.ImageWidth);
-            PositionY = RandomMutation.RandomPosition(0, AlgorithmSettings.ImageHeight);
+            PositionX = RandomMutation.RandomPosition(0, AlgorithmInformation.ImageWidth);
+            PositionY = RandomMutation.RandomPosition(0, AlgorithmInformation.ImageHeight);
         }
 
         public IDNA CloneDNA()
@@ -30,17 +25,16 @@ namespace ImageEvolution.Model.Genetic.DNA
 
         public void SoftMutation()
         {
-            int smallDelta = 25;
 
             var point = RandomMutation.RandomIntervalIntegerInclusive(0, 1);
 
             switch (point)
             {
                 case 0:
-                    PositionX = RandomMutation.RandomPosition(PositionX - smallDelta, PositionX + smallDelta);
+                    PositionX = RandomMutation.RandomPosition(PositionX - AlgorithmInformation.SmallDeltaValue(), PositionX + AlgorithmInformation.SmallDeltaValue());
                     break;
                 case 1:
-                    PositionY = RandomMutation.RandomPosition(PositionY - smallDelta, PositionY + smallDelta);
+                    PositionY = RandomMutation.RandomPosition(PositionY - AlgorithmInformation.SmallDeltaValue(), PositionY + AlgorithmInformation.SmallDeltaValue());
                     break;
             }
 
@@ -54,39 +48,42 @@ namespace ImageEvolution.Model.Genetic.DNA
             switch (point)
             {
                 case 0:
-                    PositionX = RandomMutation.RandomPosition(0, AlgorithmSettings.ImageWidth);
+                    PositionX = RandomMutation.RandomPosition(0, AlgorithmInformation.ImageWidth);
                     break;
                 case 1:
-                    PositionY = RandomMutation.RandomPosition(0, AlgorithmSettings.ImageHeight);
+                    PositionY = RandomMutation.RandomPosition(0, AlgorithmInformation.ImageHeight);
                     break;
             }
         }
 
         public void HardMutation()
         {
-            PositionX = RandomMutation.RandomPosition(0, AlgorithmSettings.ImageWidth);
-            PositionY = RandomMutation.RandomPosition(0, AlgorithmSettings.ImageHeight);
+            PositionX = RandomMutation.RandomPosition(0, AlgorithmInformation.ImageWidth);
+            PositionY = RandomMutation.RandomPosition(0, AlgorithmInformation.ImageHeight);
         }
 
         public void GaussianMutation()
         {
-            throw new NotImplementedException();
+            PositionX += RandomMutation.GaussianRandom(AlgorithmInformation.ImageWidth);
+            PositionY += RandomMutation.GaussianRandom(AlgorithmInformation.ImageHeight);
+
+            FixPosition();
         }
 
 
         private void FixPosition()
         {
-            if (PositionX > AlgorithmSettings.ImageWidth)
+            if (PositionX > AlgorithmInformation.ImageWidth)
             {
-                PositionX = AlgorithmSettings.ImageWidth;
+                PositionX = AlgorithmInformation.ImageWidth;
             }
             if (PositionX < 0)
             {
                 PositionX = 0;
             }
-            if (PositionY > AlgorithmSettings.ImageHeight)
+            if (PositionY > AlgorithmInformation.ImageHeight)
             {
-                PositionY = AlgorithmSettings.ImageHeight;
+                PositionY = AlgorithmInformation.ImageHeight;
             }
             if (PositionY < 0)
             {

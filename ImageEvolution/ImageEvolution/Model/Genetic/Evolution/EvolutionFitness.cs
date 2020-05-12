@@ -29,41 +29,39 @@ namespace ImageEvolution
 
             using (Bitmap bit = new Bitmap(_imageWidth, _imageHeight, PixelFormat.Format24bppRgb))
             {
-                using (Graphics graphics = Graphics.FromImage(bit))
+                using Graphics graphics = Graphics.FromImage(bit);
+                ImageRenderer.DrawImage(individual, graphics);
+
+                BitmapData bitmapData = bit.LockBits(new Rectangle(0, 0, _imageWidth, _imageHeight), ImageLockMode.ReadOnly, PixelFormat.Format24bppRgb);
+
+                byte bytesPerPixel = 3;
+
+                byte* scan0 = (byte*)bitmapData.Scan0.ToPointer();
+                int stride = bitmapData.Stride;
+
+                for (int j = 0; j < _imageHeight; j++)
                 {
-                    ImageRenderer.DrawImage(individual, graphics);
+                    byte* row = scan0 + (j * stride);
 
-                    BitmapData bitmapData = bit.LockBits(new Rectangle(0, 0, _imageWidth, _imageHeight), ImageLockMode.ReadOnly, PixelFormat.Format24bppRgb);
-
-                    byte bytesPerPixel = 3;
-
-                    byte* scan0 = (byte*)bitmapData.Scan0.ToPointer();
-                    int stride = bitmapData.Stride;
-
-                    for (int j = 0; j < _imageHeight; j++)
+                    for (int i = 0; i < _imageWidth; i++)
                     {
-                        byte* row = scan0 + (j * stride);
+                        int bIndex = i * bytesPerPixel;
+                        int gIndex = bIndex + 1;
+                        int rIndex = bIndex + 2;
 
-                        for (int i = 0; i < _imageWidth; i++)
-                        {
-                            int bIndex = i * bytesPerPixel;
-                            int gIndex = bIndex + 1;
-                            int rIndex = bIndex + 2;
+                        byte oRed = originalColours[i, j].R;
+                        byte oGreen = originalColours[i, j].G;
+                        byte oBlue = originalColours[i, j].B;
 
-                            byte oRed = originalColours[i, j].R;
-                            byte oGreen = originalColours[i, j].G;
-                            byte oBlue = originalColours[i, j].B;
+                        byte gRed = row[rIndex];
+                        byte gGreen = row[gIndex];
+                        byte gBlue = row[bIndex];
 
-                            byte gRed = row[rIndex];
-                            byte gGreen = row[gIndex];
-                            byte gBlue = row[bIndex];
-
-                            d += Math.Sqrt(Math.Pow(oRed - gRed, 2) + Math.Pow(oGreen - gGreen, 2) + Math.Pow(oBlue - gBlue, 2));
-                        }
+                        d += Math.Sqrt(Math.Pow(oRed - gRed, 2) + Math.Pow(oGreen - gGreen, 2) + Math.Pow(oBlue - gBlue, 2));
                     }
-
-                   bit.UnlockBits(bitmapData);
                 }
+
+                bit.UnlockBits(bitmapData);
             }
 
             individual.Adaptation = (_dMax - d) / _dMax * 100;

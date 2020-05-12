@@ -1,10 +1,8 @@
 ﻿using ImageEvolution.Model.Genetic.Evolution;
-using System;
 using System.Collections.Generic;
 using ImageEvolution.Model.Genetic.Chromosome;
 using System.Drawing;
 
-using System.Text;
 using ImageEvolution.Model.Genetic.DNA;
 
 namespace ImageEvolution.Model.Utils
@@ -55,21 +53,17 @@ namespace ImageEvolution.Model.Utils
 
         private static void DrawElipse(ShapeChromosome shape, Graphics graphics)
         {
-            using (Brush brush = GetSolidColour(shape.ColourShape))
-            {
-                Point[] points = GetGdiPoints(shape.PositionsShape);
-                graphics.FillEllipse(brush, points[0].X, points[0].Y, points[1].X, points[1].Y);
-            }
+            using Brush brush = GetSolidColour(shape.ColourShape);
+            Point[] points = GetGdiPoints(shape.PositionsShape);
+            graphics.FillEllipse(brush, points[0].X, points[0].Y, points[1].X, points[1].Y);
 
         }
 
         private static void DrawFigure(ShapeChromosome shape, Graphics graphics)
         {
-            using (Brush brush = GetSolidColour(shape.ColourShape))
-            {
-                Point[] points = GetGdiPoints(shape.PositionsShape);
-                graphics.FillPolygon(brush, points);
-            }
+            using Brush brush = GetSolidColour(shape.ColourShape);
+            Point[] points = GetGdiPoints(shape.PositionsShape);
+            graphics.FillPolygon(brush, points);
         }
 
         private static Point[] GetGdiPoints(IList<PositionDNA> points)

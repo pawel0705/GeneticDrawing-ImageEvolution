@@ -36,15 +36,15 @@
                     <Label FontWeight="Bold" Foreground="MediumPurple" FontSize="20">Evolution information:</Label>
                     <Label Foreground="Purple" Name="elapsedTime"  Content ="Elapsed time: 0:00"/>
                     <Label Foreground="Purple" Name="generation" Content="Generation: 0"/>
+                    <Label Foreground="Purple" Name="killedChildsLabel" Content="Killed childs: 0"/>
                     <Label Foreground="Purple" Name="bestFitness" Content="Best fitness: 0%"/>
                     <Label Foreground="Purple" Name="currentFitness" Content="Current fitness: 0%"/>
                     <Label Foreground="Purple" Name="populationLabel" Content="Population: 0"/>
                     <Label Foreground="Purple" Name="eliteLabel" Content="Elite: 0"/>
-                    <Label Foreground="Purple" Name="mutationTypeLabel" Content="Mutation type: Nothing"/>
+                    <Label Foreground="Purple" Name="mutationTypeLabel" Content="Mutation type: -"/>
                     <Label Foreground="Purple" Name="mutationChanceLabel" Content="Mutation chance: 0%"/>
-                    <Label Foreground="Purple" Name="dinamicallyMutationLabel" Content="Dynamic mutation: NO"/>
-                    <Label Foreground="Purple" Name="reproductionTypeLabel" Content="Reproduction: Two-parents"/>
-                    <Label Foreground="Purple" Name="killedChildsLabel" Content="Killed childs: 0"/>
+                    <Label Foreground="Purple" Name="dinamicallyMutationLabel" Content="Dynamic mutation: -"/>
+                    <Label Foreground="Purple" Name="reproductionTypeLabel" Content="Reproduction: -"/>
                 </StackPanel>
 
                 <StackPanel Orientation="Vertical" HorizontalAlignment="Left"  VerticalAlignment="Top" Margin="10,263,0,0" Height="273">
@@ -77,10 +77,10 @@
 
                 <StackPanel Orientation="Vertical"  HorizontalAlignment="Left"  Margin="447,263,0,134" Width="172">
                     <Label FontWeight="Bold" Foreground="MediumPurple" FontSize="20" Content="Type of shape:"/>
-                    <CheckBox Margin="0 5 0 0" x:Name="circleCheckBox" Content="Circle"/>
+                    <CheckBox Margin="0 5 0 0" x:Name="circleCheckBox" Content="Elipse"/>
                     <CheckBox Margin="0 5 0 0" x:Name="triangleCheckBox" Content="Triangle"/>
                     <CheckBox Margin="0 5 0 0" x:Name="rectangleCheckBox" Content="Rectangle"/>
-                    <CheckBox Margin="0 5 0 0" x:Name="pentagonCheckBox" Content="Pentagon"/>
+                    <CheckBox Margin="0 5 0 0" x:Name="pentagonCheckBox" Content="5-vertex figure"/>
                 </StackPanel>
 
                 <StackPanel Orientation="Vertical"  HorizontalAlignment="Left" Margin="447,416,0,10" Width="200">

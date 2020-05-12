@@ -1,10 +1,6 @@
 ﻿using ImageEvolution.Model.Genetic.Chromosome;
-using ImageEvolution.Model.Genetic.DNA;
 using ImageEvolution.Model.Utils;
-using System;
 using System.Collections.Generic;
-using System.Text;
-using System.Windows.Shapes;
 
 namespace ImageEvolution.Model.Genetic.Evolution
 {
@@ -65,29 +61,29 @@ namespace ImageEvolution.Model.Genetic.Evolution
 
         public void Initialize()
         {
-            int shapesAmount = AlgorithmSettings.ShapesAmount;
+            int shapesAmount = AlgorithmInformation.ShapesAmount;
 
             for (int i = 0; i < shapesAmount;)
             {
-                if(AlgorithmSettings.CircleShape)
+                if(AlgorithmInformation.CircleShape)
                 {
                     AddShape(ShapeType.CIRCLE);
                     i++;
                 }
 
-                if(AlgorithmSettings.PentagonShape)
+                if(AlgorithmInformation.PentagonShape)
                 {
                     AddShape(ShapeType.PENTAGON);
                     i++;
                 }
 
-                if (AlgorithmSettings.SquareShape)
+                if (AlgorithmInformation.SquareShape)
                 {
                     AddShape(ShapeType.SQUARE);
                     i++;
                 }
 
-                if(AlgorithmSettings.TriangleShape)
+                if(AlgorithmInformation.TriangleShape)
                 {
                     AddShape(ShapeType.TRIANGLE);
                     i++;
