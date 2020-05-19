@@ -17,7 +17,7 @@ namespace ImageEvolution
     public partial class EvolutionWindow : UserControl
     {
         private Bitmap _originalBitmap;
-        private TwoParentEvolution _community;
+        internal TwoParentEvolution _community;
         private SingleParentEvolution _oneIndividual;
 
         private bool _generateButtonLock = false;
@@ -41,7 +41,7 @@ namespace ImageEvolution
 
         private Thread _generationThread;
 
-        private bool generateTwoParent;
+        public bool generateTwoParent;
 
         public EvolutionWindow()
         {

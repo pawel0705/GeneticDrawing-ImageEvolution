@@ -1,6 +1,7 @@
 ﻿using ImageEvolution.Model.Genetic.Chromosome;
 using ImageEvolution.Model.Utils;
 using System.Collections.Generic;
+using System.Text;
 
 namespace ImageEvolution.Model.Genetic.Evolution
 {
@@ -9,6 +10,8 @@ namespace ImageEvolution.Model.Genetic.Evolution
         public double Adaptation { get; set; }
 
         public int Generation { get; set; }
+
+        public StringBuilder DNAstring { get; set; }
 
         public List<ShapeChromosome> TriangleShapes { get; set; }
         public List<ShapeChromosome> SquareShapes { get; set; }
@@ -21,6 +24,21 @@ namespace ImageEvolution.Model.Genetic.Evolution
             SquareShapes = new List<ShapeChromosome>();
             ElipseShapes = new List<ShapeChromosome>();
             PentagonShapes = new List<ShapeChromosome>();
+
+            DNAstring = new StringBuilder();
+        }
+
+        public void CreateNewDNAString()
+        {
+            DNAstring.Clear();
+
+            foreach(var triangle in TriangleShapes)
+            {
+                DNAstring.Append(triangle.ColourShape.RedColour + " " + triangle.ColourShape.GreenColour + " " + triangle.ColourShape.BlueColour + " " + triangle.ColourShape.AlphaColour + " ");
+                DNAstring.Append(triangle.PositionsShape[0].PositionX + " " + triangle.PositionsShape[0].PositionY + " " +
+                    triangle.PositionsShape[1].PositionX + " " + triangle.PositionsShape[1].PositionY + " " +
+                    triangle.PositionsShape[2].PositionX + " " + triangle.PositionsShape[2].PositionY + " ");
+            }
         }
 
         public Individual CloneIndividual()
@@ -31,6 +49,7 @@ namespace ImageEvolution.Model.Genetic.Evolution
                 SquareShapes = new List<ShapeChromosome>(),
                 ElipseShapes = new List<ShapeChromosome>(),
                 PentagonShapes = new List<ShapeChromosome>(),
+                DNAstring = new StringBuilder(),
 
                 Adaptation = Adaptation,
                 Generation = Generation
@@ -55,6 +74,8 @@ namespace ImageEvolution.Model.Genetic.Evolution
             {
                 individual.PentagonShapes.Add(shape.CloneShapeChromosome());
             }
+
+            individual.DNAstring.Append(DNAstring);
 
             return individual;
         }

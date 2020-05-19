@@ -90,6 +90,8 @@ namespace ImageEvolution.Model.Genetic.Evolution
                 AlgorithmInformation.KilledChilds++;
             }
 
+            _childIndividual.CreateNewDNAString();
+
             return _childIndividual;
         }
 

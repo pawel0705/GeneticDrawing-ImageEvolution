@@ -30,10 +30,12 @@ namespace ImageEvolution
     public partial class MainWindow : Window
     {
         private EvolutionWindow evolutionWindow;
+        private Evolution2Window evolution2Window;
 
         public MainWindow()
         {
             evolutionWindow = new EvolutionWindow();
+            evolution2Window = new Evolution2Window();
 
             InitializeComponent();
         }
@@ -49,6 +51,19 @@ namespace ImageEvolution
             DragMove();
         }
 
+        private void SetDataBetweenWindows()
+        {
+            evolution2Window.individualList.Clear();
+
+            if (evolutionWindow.generateTwoParent)
+            {
+                for(int i = 0; i < AlgorithmInformation.Population; i++)
+                {
+                    evolution2Window.individualList.Add(evolutionWindow._community._populationIndividuals[i]);
+                }
+            }
+        }
+
         private void ListViewMenu_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             int index = ListViewMenu.SelectedIndex;
@@ -59,6 +74,11 @@ namespace ImageEvolution
                 case 0:
                     GridWindow.Children.Clear();
                     GridWindow.Children.Add(evolutionWindow);
+                    break;
+                case 1:
+                    GridWindow.Children.Clear();
+                    GridWindow.Children.Add(evolution2Window);
+                    SetDataBetweenWindows();
                     break;
                 default:
                     break;

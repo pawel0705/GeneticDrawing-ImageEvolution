@@ -8,7 +8,7 @@ namespace ImageEvolution.Model.Genetic.Evolution
 {
     public class TwoParentEvolution
     {
-        private Individual[] _populationIndividuals;
+        public Individual[] _populationIndividuals { get; private set; }
         private Individual[] _eliteIndividuals;
 
         private Color[,] _destinationIndividual;
@@ -50,20 +50,21 @@ namespace ImageEvolution.Model.Genetic.Evolution
             for (int j = 0; j < AlgorithmInformation.Population; j++)
             {
                 _populationIndividuals[j].Generation = _generation;
+                _populationIndividuals[j].CreateNewDNAString();
                 _evolutionFitness.CompareImages(_populationIndividuals[j], _destinationIndividual);
             }
 
-            Individual[] sortedGeneration = new Individual[AlgorithmInformation.Population];
-            for (int j = 0; j < AlgorithmInformation.Population; j++)
-            {
-                sortedGeneration[j] = _populationIndividuals[j].CloneIndividual();
-            }
+            //        Individual[] sortedGeneration = new Individual[AlgorithmInformation.Population];
+            //        for (int j = 0; j < AlgorithmInformation.Population; j++)
+            //       {
+            //            sortedGeneration[j] = _populationIndividuals[j].CloneIndividual();
+            //        }
 
-            sortedGeneration = sortedGeneration.OrderByDescending(i => i.Adaptation).ToArray();
+            _populationIndividuals = _populationIndividuals.OrderByDescending(i => i.Adaptation).ToArray();
 
             for (int j = 0; j < AlgorithmInformation.Elite; j++)
             {
-                _eliteIndividuals[j] = sortedGeneration[j];
+                _eliteIndividuals[j] = _populationIndividuals[j].CloneIndividual();
             }
 
             int i = 0;
@@ -174,6 +175,8 @@ namespace ImageEvolution.Model.Genetic.Evolution
                     individualChild.PentagonShapes[i].MutateChromosome();
                 }
             }
+
+
 
             return individualChild;
         }
