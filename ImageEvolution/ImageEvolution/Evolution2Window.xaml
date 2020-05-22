@@ -11,14 +11,28 @@
              Foreground="Purple"
              Height="600" Width="800">
     <Grid>
-        <ListView Margin="10" Name="lvIndividuals">
-            <ListView.View>
-                <GridView>
-                    <GridViewColumn Header="Individual no." Width="auto" DisplayMemberBinding="{Binding Individual}" />
-                    <GridViewColumn Header="Fitness (%)" Width="auto" DisplayMemberBinding="{Binding Fitness}" />
-                    <GridViewColumn Header="DNA" Width="auto" DisplayMemberBinding="{Binding IndividualDNA}" />
-                </GridView>
-            </ListView.View>
-        </ListView>
+        <materialDesign:TransitioningContent x:Name="TrainsitionigContentSlide" OpeningEffect="{materialDesign:TransitionEffect SlideInFromRight, Duration=0:0:1.5}">
+            <Grid>
+                <ListView Margin="10,10,337,10" Name="lvIndividuals">
+                    <ListView.View>
+                        <GridView>
+                            <GridViewColumn Header="Individual no." Width="auto" DisplayMemberBinding="{Binding Individual}" />
+                            <GridViewColumn Header="Fitness (%)" Width="auto" DisplayMemberBinding="{Binding Fitness}" />
+                            <GridViewColumn Header="DNA" Width="auto" DisplayMemberBinding="{Binding IndividualDNA}" />
+                        </GridView>
+                    </ListView.View>
+                </ListView>
+                <StackPanel Margin="432,243,0,0">
+                    <Label x:Name="lblCustomDataGridHeader" Content="{Binding TestText}"  HorizontalAlignment="Center" FontSize="24"/>
+                    <Canvas Height="260" Width="300">
+                        <Polyline Points="{Binding Points}" Stroke="LightBlue" StrokeThickness="4" />
+                    </Canvas>
+                </StackPanel>
+
+
+                <Button Content="Refresh DNA" Name="RefreshDNAButton" Width="130" HorizontalAlignment="Left" Margin="589,34,0,0" VerticalAlignment="Top" Click="PrintInformationIndividual"/>
+                <Button Content="Save DNA" Name="SaveDNAButton" Width="130" HorizontalAlignment="Left" Margin="589,96,0,0" VerticalAlignment="Top" Click="InsertOriginalImage"/>
+            </Grid>
+        </materialDesign:TransitioningContent>
     </Grid>
 </UserControl>

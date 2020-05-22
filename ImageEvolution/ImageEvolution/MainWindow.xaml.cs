@@ -29,13 +29,13 @@ namespace ImageEvolution
 {
     public partial class MainWindow : Window
     {
-        private EvolutionWindow evolutionWindow;
+        internal EvolutionWindow evolutionWindow;
         private Evolution2Window evolution2Window;
 
         public MainWindow()
         {
             evolutionWindow = new EvolutionWindow();
-            evolution2Window = new Evolution2Window();
+            evolution2Window = new Evolution2Window(this);
 
             InitializeComponent();
         }

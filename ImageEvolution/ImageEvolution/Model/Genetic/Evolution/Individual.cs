@@ -32,12 +32,42 @@ namespace ImageEvolution.Model.Genetic.Evolution
         {
             DNAstring.Clear();
 
+            DNAstring.Append("T");
             foreach(var triangle in TriangleShapes)
             {
                 DNAstring.Append(triangle.ColourShape.RedColour + " " + triangle.ColourShape.GreenColour + " " + triangle.ColourShape.BlueColour + " " + triangle.ColourShape.AlphaColour + " ");
                 DNAstring.Append(triangle.PositionsShape[0].PositionX + " " + triangle.PositionsShape[0].PositionY + " " +
                     triangle.PositionsShape[1].PositionX + " " + triangle.PositionsShape[1].PositionY + " " +
                     triangle.PositionsShape[2].PositionX + " " + triangle.PositionsShape[2].PositionY + " ");
+            }
+
+            DNAstring.Append("S");
+            foreach(var square in SquareShapes)
+            {
+                DNAstring.Append(square.ColourShape.RedColour + " " + square.ColourShape.GreenColour + " " + square.ColourShape.BlueColour + " " + square.ColourShape.AlphaColour + " ");
+                DNAstring.Append(square.PositionsShape[0].PositionX + " " + square.PositionsShape[0].PositionY + " " +
+                    square.PositionsShape[1].PositionX + " " + square.PositionsShape[1].PositionY + " " +
+                    square.PositionsShape[2].PositionX + " " + square.PositionsShape[2].PositionY + " " +
+                    square.PositionsShape[3].PositionX + " " + square.PositionsShape[3].PositionY + " ");
+            }
+
+            DNAstring.Append("E");
+            foreach (var elipse in ElipseShapes)
+            {
+                DNAstring.Append(elipse.ColourShape.RedColour + " " + elipse.ColourShape.GreenColour + " " + elipse.ColourShape.BlueColour + " " + elipse.ColourShape.AlphaColour + " ");
+                DNAstring.Append(elipse.PositionsShape[0].PositionX + " " + elipse.PositionsShape[0].PositionY + " " +
+                    elipse.PositionsShape[1].PositionX + " " + elipse.PositionsShape[1].PositionY + " ");
+            }
+
+            DNAstring.Append("P");
+            foreach (var pentagon in PentagonShapes)
+            {
+                DNAstring.Append(pentagon.ColourShape.RedColour + " " + pentagon.ColourShape.GreenColour + " " + pentagon.ColourShape.BlueColour + " " + pentagon.ColourShape.AlphaColour + " ");
+                DNAstring.Append(pentagon.PositionsShape[0].PositionX + " " + pentagon.PositionsShape[0].PositionY + " " +
+                    pentagon.PositionsShape[1].PositionX + " " + pentagon.PositionsShape[1].PositionY + " " +
+                    pentagon.PositionsShape[2].PositionX + " " + pentagon.PositionsShape[2].PositionY + " " +
+                    pentagon.PositionsShape[3].PositionX + " " + pentagon.PositionsShape[3].PositionY + " " +
+                    pentagon.PositionsShape[4].PositionX + " " + pentagon.PositionsShape[4].PositionY + " ");
             }
         }
 

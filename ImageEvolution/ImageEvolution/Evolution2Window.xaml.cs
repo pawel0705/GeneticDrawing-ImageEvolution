@@ -26,48 +26,26 @@ namespace ImageEvolution
             public string IndividualDNA { get; set; }
         }
 
-        private DispatcherTimer updateListTime;
+        private MainWindow _mainWindow;
 
         public List<Individual> individualList;
 
         private List<IndividualListData> individualListDatas;
 
-        public Evolution2Window()
+        public Evolution2Window(MainWindow mainWindow)
         {
             InitializeComponent();
+
+            _mainWindow = mainWindow;
 
             individualList = new List<Individual>();
 
             individualListDatas = new List<IndividualListData>();
 
-            updateListTime = new DispatcherTimer
-            {
-                Interval = TimeSpan.FromSeconds(1)
-            };
-            updateListTime.Tick += UpdateIndividualList;
-
-
-            updateListTime.Start();
         }
 
         private void UpdateIndividualList(object sender, EventArgs e)
         {
-
-            lock (individualList)
-            {
-                individualListDatas.Clear();
-
-                int iterator = 0;
-                foreach (var i in individualList)
-                {
-                    individualListDatas.Add(new IndividualListData() { Individual = iterator, Fitness = i.Adaptation.ToString(), IndividualDNA = i.DNAstring.ToString() }); ;
-
-                    iterator++;
-                }
-
-                lvIndividuals.ItemsSource = individualListDatas;
-                
-            }
 
         }
 
@@ -79,6 +57,31 @@ namespace ImageEvolution
         private void GridViewColumnHeader_Click(object sender, RoutedEventArgs e)
         {
 
+        }
+
+        private void InsertOriginalImage(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void PrintInformationIndividual(object sender, RoutedEventArgs e)
+        {
+            individualListDatas.Clear();
+            individualList.Clear();
+            lvIndividuals.ItemsSource = null;
+
+            individualList.AddRange(_mainWindow.evolutionWindow._community.GetListOfIndividuals());
+            
+
+            int iterator = 0;
+            foreach (var i in individualList)
+            {
+                individualListDatas.Add(new IndividualListData() { Individual = iterator, Fitness = i.Adaptation.ToString(), IndividualDNA = i.DNAstring.ToString() }); ;
+
+                iterator++;
+            }
+
+            lvIndividuals.ItemsSource = individualListDatas;
         }
     }
 }

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Drawing.Drawing2D;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Threading;
@@ -14,6 +15,8 @@ namespace ImageEvolution.Model.Genetic.Evolution
     {
         public Individual[] _populationIndividuals { get; private set; }
 
+        public Individual[] _populationToPass { get; set; }
+
         private Individual[] _eliteIndividuals;
 
         private List<Thread> _threads;
@@ -26,6 +29,7 @@ namespace ImageEvolution.Model.Genetic.Evolution
             _populationForThread = new int[AlgorithmInformation.GetOptimalThreadAmount()];
 
             _populationIndividuals = new Individual[AlgorithmInformation.Population];
+            _populationToPass = new Individual[AlgorithmInformation.Population];
             _eliteIndividuals = new Individual[AlgorithmInformation.Elite];
 
             _destinationIndividual = sourceIndividual;
@@ -54,11 +58,11 @@ namespace ImageEvolution.Model.Genetic.Evolution
             }
 
             var oneThread = AlgorithmInformation.Population / AlgorithmInformation.GetOptimalThreadAmount();
-            if(oneThread * AlgorithmInformation.GetOptimalThreadAmount() != AlgorithmInformation.Population)
+            if (oneThread * AlgorithmInformation.GetOptimalThreadAmount() != AlgorithmInformation.Population)
             {
                 int delta = AlgorithmInformation.Population - (oneThread * (AlgorithmInformation.GetOptimalThreadAmount() - 1));
-                
-                for(int j = 0; j < AlgorithmInformation.GetOptimalThreadAmount() - 1; j++)
+
+                for (int j = 0; j < AlgorithmInformation.GetOptimalThreadAmount() - 1; j++)
                 {
                     _populationForThread[j] = oneThread;
                 }
@@ -76,17 +80,19 @@ namespace ImageEvolution.Model.Genetic.Evolution
 
             int from = 0;
             int to = _populationForThread[0];
-            for(int j = 0; j < AlgorithmInformation.GetOptimalThreadAmount(); j++)
+            for (int j = 0; j < AlgorithmInformation.GetOptimalThreadAmount(); j++)
             {
+                int[] coords = { from, to };
+
                 var th = new Thread(() =>
                 {
-                        ComparePopulation(from, to);
+                    ComparePopulation(coords[0], coords[1]);
                 });
                 this._threads.Add(th);
 
-                if((j + 1) < _populationForThread.Length)
+                if ((j + 1) < _populationForThread.Length)
                 {
-                    from += _populationForThread[j + 1];
+                    from += _populationForThread[j];
                     to += _populationForThread[j + 1];
                 }
             }
@@ -101,15 +107,21 @@ namespace ImageEvolution.Model.Genetic.Evolution
                 th.Join();
             }
 
-            _threads.Clear();
+
 
 
             _populationIndividuals = _populationIndividuals.OrderByDescending(i => i.Adaptation).ToArray();
+
+            for (int j = 0; j < AlgorithmInformation.Population; j++)
+            {
+                _populationToPass[j] = _populationIndividuals[j].CloneIndividual();
+            }
 
             for (int j = 0; j < AlgorithmInformation.Elite; j++)
             {
                 _eliteIndividuals[j] = _populationIndividuals[j].CloneIndividual();
             }
+
 
             int i = 0;
             int mother = 0;
@@ -142,17 +154,29 @@ namespace ImageEvolution.Model.Genetic.Evolution
 
             OnIndividualCreated(_eliteIndividuals[0]);
 
+            _threads.Clear();
+
             return _eliteIndividuals[0];
+        }
+
+        public IEnumerable<Individual> GetListOfIndividuals()
+        {
+            return _populationToPass;
         }
 
         private void ComparePopulation(int from, int to)
         {
-            for(int i = from; i < to; i++)
+            for (int i = from; i < to; i++)
             {
-                _populationIndividuals[i].Generation = _generation;
-                _populationIndividuals[i].CreateNewDNAString();
-                _evolutionFitness.CompareImages(_populationIndividuals[i], _destinationIndividual);
+                lock (_populationIndividuals)
+                {
+                    _populationIndividuals[i].Generation = _generation;
+                    _populationIndividuals[i].CreateNewDNAString();
+                    _evolutionFitness.CompareImages(_populationIndividuals[i], _destinationIndividual);
+                }
             }
+
+            Console.WriteLine(from + " " + to);
         }
 
         private Individual Reproduct(Individual mother, Individual father)

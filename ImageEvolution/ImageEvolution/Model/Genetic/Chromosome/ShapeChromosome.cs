@@ -198,12 +198,12 @@ namespace ImageEvolution.Model.Genetic.Chromosome
                     break;
                 case MutationType.HARD:
                     PositionsShape[0].HardMutation();
-                    PositionsShape[1].PositionY = PositionsShape[position].PositionY;
-                    PositionsShape[3].PositionX = PositionsShape[position].PositionX;
+                    PositionsShape[1].PositionY = PositionsShape[0].PositionY;
+                    PositionsShape[3].PositionX = PositionsShape[0].PositionX;
 
                     PositionsShape[2].HardMutation();
-                    PositionsShape[1].PositionX = PositionsShape[position].PositionX;
-                    PositionsShape[3].PositionY = PositionsShape[position].PositionY;
+                    PositionsShape[1].PositionX = PositionsShape[2].PositionX;
+                    PositionsShape[3].PositionY = PositionsShape[2].PositionY;
                     break;
             }
 
