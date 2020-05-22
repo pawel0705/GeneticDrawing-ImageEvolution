@@ -9,7 +9,7 @@ using ImageEvolution.Model.Utils;
 
 namespace ImageEvolution
 {
-    class EvolutionFitness
+    public class EvolutionFitness
     {
         private readonly int _imageWidth;
         private readonly int _imageHeight;

@@ -31,5 +31,10 @@ namespace ImageEvolution.Model.Utils
         {
             return (int)((ImageWidth + ImageHeight) / 20.0f);
         }
+
+        public static int GetOptimalThreadAmount()
+        {
+            return Environment.ProcessorCount - 1;
+        }
     }
 }

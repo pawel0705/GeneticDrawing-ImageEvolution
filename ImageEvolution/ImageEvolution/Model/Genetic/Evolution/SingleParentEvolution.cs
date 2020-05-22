@@ -4,14 +4,8 @@ using System.Drawing;
 
 namespace ImageEvolution.Model.Genetic.Evolution
 {
-    class SingleParentEvolution
+    public class SingleParentEvolution : Evolution
     {
-        private Color[,] _destinationIndividual;
-
-        private EvolutionFitness _evolutionFitness;
-
-        private int _generation = 0;
-
         Individual _parentIndividual;
 
         public void InitializeEvolution(Color[,] sourceIndividual)
@@ -24,7 +18,7 @@ namespace ImageEvolution.Model.Genetic.Evolution
             _evolutionFitness = new EvolutionFitness(AlgorithmInformation.ImageWidth, AlgorithmInformation.ImageHeight);
         }
 
-        public Individual Generate()
+        override public Individual Generate()
         {
             _generation++;
 
@@ -92,22 +86,11 @@ namespace ImageEvolution.Model.Genetic.Evolution
 
             _childIndividual.CreateNewDNAString();
 
+            OnIndividualCreated(_childIndividual);
+
             return _childIndividual;
         }
 
-        private bool WillMutate()
-        {
-            if (AlgorithmInformation.MutationChance <= 0)
-            {
-                AlgorithmInformation.MutationChance = 1;
-            }
 
-            if (RandomMutation.RandomIntervalIntegerInclusive(0, 100 - AlgorithmInformation.MutationChance) == 0)
-            {
-                return true;
-            }
-
-            return false;
-        }
     }
 }

@@ -26,7 +26,6 @@ namespace ImageEvolution
         private bool _newBestIndividual = false;
         private bool _evolutionInitialized = false;
 
-        private readonly int _milisecondsTime = 10;
         private int _seconds = 0;
         private int _minutes = 0;
 
@@ -36,7 +35,6 @@ namespace ImageEvolution
 
         private Color[,] sourceColours;
 
-        private DispatcherTimer _refreshImagesTimer;
         private DispatcherTimer _timeTimer;
 
         private Thread _generationThread;
@@ -64,20 +62,16 @@ namespace ImageEvolution
         private void InitializeObjects()
         {
             _community = new TwoParentEvolution();
+            _community.IndividualCreated += ShowDataImages;
+
             _oneIndividual = new SingleParentEvolution();
+            _oneIndividual.IndividualCreated += ShowDataImages;
 
             _tmpIndividual = new Individual();
         }
 
         private void InitializeTimers()
         {
-            _refreshImagesTimer = new DispatcherTimer
-            {
-                Interval = TimeSpan.FromMilliseconds(_milisecondsTime)
-            };
-            _refreshImagesTimer.Tick += ShowDataImages;
-            _refreshImagesTimer.Start();
-
             _timeTimer = new DispatcherTimer
             {
                 Interval = TimeSpan.FromSeconds(1)
@@ -114,101 +108,107 @@ namespace ImageEvolution
             }
         }
 
-        private void ShowDataImages(object sender, EventArgs e)
+        private void ShowDataImages(object sender, IndividualEventArgs e)
         {
-            if (_tmpIndividual == null || _originalBitmap == null)
+            Dispatcher.Invoke(delegate
             {
-                return;
-            }
-
-            lock (_tmpIndividual)
-            {
-                if (_bestOfAllIndividual == null)
+                if (_tmpIndividual == null || _originalBitmap == null)
                 {
-                    _bestOfAllIndividual = _tmpIndividual.CloneIndividual();
-                    _newBestIndividual = true;
+                    return;
                 }
 
-                if (_bestOfAllIndividual.Adaptation < _tmpIndividual.Adaptation)
+                lock (_tmpIndividual)
                 {
-                    _bestOfAllIndividual = _tmpIndividual.CloneIndividual();
-                    _newBestIndividual = true;
+                    if (_bestOfAllIndividual == null)
+                    {
+                        _bestOfAllIndividual = _tmpIndividual.CloneIndividual();
+                        _newBestIndividual = true;
+                    }
+
+                    if (_bestOfAllIndividual.Adaptation < _tmpIndividual.Adaptation)
+                    {
+                        _bestOfAllIndividual = _tmpIndividual.CloneIndividual();
+                        _newBestIndividual = true;
+                    }
+
+                    _topGenerationIndividual = _tmpIndividual.CloneIndividual();
                 }
 
-                _topGenerationIndividual = _tmpIndividual.CloneIndividual();
-            }
+                using (var bit = new Bitmap(_originalBitmap.Width, _originalBitmap.Height))
+                {
 
-            using (var bit = new Bitmap(_originalBitmap.Width, _originalBitmap.Height))
-            {
-                this.actualGeneticImage.Source = null;
-                Graphics graphics = Graphics.FromImage(bit);
-                graphics.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.HighQuality;
-                ImageRenderer.DrawImage(_topGenerationIndividual, graphics);
-                bit.Save("topGenerationIndividual.png", ImageFormat.Png);
+                    this.actualGeneticImage.Source = null;
+                    Graphics graphics = Graphics.FromImage(bit);
+                    graphics.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.HighQuality;
+                    ImageRenderer.DrawImage(_topGenerationIndividual, graphics);
+                    bit.Save("topGenerationIndividual.png", ImageFormat.Png);
+
+                    if (_newBestIndividual == true)
+                    {
+                        this.bestGeneticImage.Source = null;
+                        bit.Save("topIndividual.png", ImageFormat.Png);
+                    }
+
+                }
+
+                var bitmap = new BitmapImage();
+                var stream = File.OpenRead("topGenerationIndividual.png");
+
+                bitmap.BeginInit();
+                bitmap.CacheOption = BitmapCacheOption.OnLoad;
+                bitmap.StreamSource = stream;
+                bitmap.EndInit();
+                stream.Close();
+                stream.Dispose();
+
+
+                this.actualGeneticImage.Source = bitmap;
+                this.generation.Content = "Generation: " + _topGenerationIndividual.Generation.ToString();
+                this.currentFitness.Content = "Current fitness: " + Math.Round(_topGenerationIndividual.Adaptation, 2).ToString() + "%";
+                this.populationLabel.Content = "Population: " + AlgorithmInformation.Population;
+                this.eliteLabel.Content = "Elite: " + AlgorithmInformation.Elite;
+                this.mutationTypeLabel.Content = "Mutation type: " + AlgorithmInformation.MutationType.ToString();
+                this.mutationChanceLabel.Content = "Mutation chance: " + AlgorithmInformation.MutationChance.ToString() + "%";
+                this.killedChildsLabel.Content = "Killed childs: " + AlgorithmInformation.KilledChilds;
+
+
+                if (this.mutationDynamicRadio.IsChecked ?? false)
+                {
+                    this.dinamicallyMutationLabel.Content = "Dynamic mutation: YES";
+                }
+                else
+                {
+                    this.dinamicallyMutationLabel.Content = "Dynamic mutation: NO";
+                }
+
+                if (this.twoParentRadio.IsChecked ?? false)
+                {
+                    this.reproductionTypeLabel.Content = "Reproduction: Two-parents";
+                }
+                else
+                {
+                    this.reproductionTypeLabel.Content = "Reproduction: Single-parent";
+                }
+
 
                 if (_newBestIndividual == true)
                 {
-                    this.bestGeneticImage.Source = null;
-                    bit.Save("topIndividual.png", ImageFormat.Png);
+                    var bitmap1 = new BitmapImage();
+                    var stream1 = File.OpenRead("topIndividual.png");
+
+                    bitmap1.BeginInit();
+                    bitmap1.CacheOption = BitmapCacheOption.OnLoad;
+                    bitmap1.StreamSource = stream1;
+                    bitmap1.EndInit();
+                    stream1.Close();
+                    stream1.Dispose();
+
+                    this.bestGeneticImage.Source = bitmap1;
+                    this.bestFitness.Content = "Best fitness: " + Math.Round(_bestOfAllIndividual.Adaptation, 2).ToString() + "%";
+
+                    _newBestIndividual = false;
                 }
-            }
-
-            var bitmap = new BitmapImage();
-            var stream = File.OpenRead("topGenerationIndividual.png");
-
-            bitmap.BeginInit();
-            bitmap.CacheOption = BitmapCacheOption.OnLoad;
-            bitmap.StreamSource = stream;
-            bitmap.EndInit();
-            stream.Close();
-            stream.Dispose();
-
-            this.actualGeneticImage.Source = bitmap;
-            this.generation.Content = "Generation: " + _topGenerationIndividual.Generation.ToString();
-            this.currentFitness.Content = "Current fitness: " + Math.Round(_topGenerationIndividual.Adaptation, 2).ToString() + "%";
-            this.populationLabel.Content = "Population: " + AlgorithmInformation.Population;
-            this.eliteLabel.Content = "Elite: " + AlgorithmInformation.Elite;
-            this.mutationTypeLabel.Content = "Mutation type: " + AlgorithmInformation.MutationType.ToString();
-            this.mutationChanceLabel.Content = "Mutation chance: " + AlgorithmInformation.MutationChance.ToString() + "%";
-            this.killedChildsLabel.Content = "Killed childs: " + AlgorithmInformation.KilledChilds;
-
-
-            if(this.mutationDynamicRadio.IsChecked ?? false)
-            {
-                this.dinamicallyMutationLabel.Content = "Dynamic mutation: YES";
-            }
-            else
-            {
-                this.dinamicallyMutationLabel.Content = "Dynamic mutation: NO";
-            }
-
-            if (this.twoParentRadio.IsChecked ?? false)
-            {
-                this.reproductionTypeLabel.Content = "Reproduction: Two-parents";
-            }
-            else
-            {
-                this.reproductionTypeLabel.Content = "Reproduction: Single-parent";
-            }
-
-
-            if (_newBestIndividual == true)
-            {
-                var bitmap1 = new BitmapImage();
-                var stream1 = File.OpenRead("topIndividual.png");
-
-                bitmap1.BeginInit();
-                bitmap1.CacheOption = BitmapCacheOption.OnLoad;
-                bitmap1.StreamSource = stream1;
-                bitmap1.EndInit();
-                stream1.Close();
-                stream1.Dispose();
-
-                this.bestGeneticImage.Source = bitmap1;
-                this.bestFitness.Content = "Best fitness: " + Math.Round(_bestOfAllIndividual.Adaptation, 2).ToString() + "%";
-
-                _newBestIndividual = false;
-            }
+            });
         }
 
         private void EnableUI(bool enable)
@@ -247,7 +247,7 @@ namespace ImageEvolution
         {
             if (_generateButtonLock == false)
             {
-                if(_evolutionInitialized == false)
+                if (_evolutionInitialized == false)
                 {
                     AlgorithmInformation.CircleShape = circleCheckBox.IsChecked ?? false;
                     AlgorithmInformation.PentagonShape = pentagonCheckBox.IsChecked ?? false;
@@ -265,11 +265,11 @@ namespace ImageEvolution
                     {
                         AlgorithmInformation.MutationType = MutationType.SOFT;
                     }
-                    else if(mutationMediumRadio.IsChecked ?? false)
+                    else if (mutationMediumRadio.IsChecked ?? false)
                     {
                         AlgorithmInformation.MutationType = MutationType.MEDIUM;
                     }
-                    else if(mutationHardRadio.IsChecked ?? false)
+                    else if (mutationHardRadio.IsChecked ?? false)
                     {
                         AlgorithmInformation.MutationType = MutationType.HARD;
                     }
@@ -280,7 +280,7 @@ namespace ImageEvolution
 
                     EnableUI(false);
 
-                    if(twoParentRadio.IsChecked ?? false)
+                    if (twoParentRadio.IsChecked ?? false)
                     {
                         generateTwoParent = true;
                         _community.InitializeEvolution(sourceColours);
@@ -313,7 +313,7 @@ namespace ImageEvolution
 
                 try
                 {
-                    if(generateTwoParent)
+                    if (generateTwoParent)
                     {
                         GenerateImagesTwoParentReproduction();
                     }
@@ -322,7 +322,7 @@ namespace ImageEvolution
                         GenerateImagesSingleParentReproduction();
                     }
                 }
-                catch(ThreadInterruptedException ex)
+                catch (ThreadInterruptedException ex)
                 {
                     // TODO ?
                 }
@@ -404,7 +404,7 @@ namespace ImageEvolution
             RemoveThread();
         }
 
-  
+
 
         private void ShapesAmountSlider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
@@ -427,7 +427,7 @@ namespace ImageEvolution
         {
             AlgorithmInformation.Elite = (int)(AlgorithmInformation.Population * (EliteAmountSlider.Value / 100.0f));
 
-            if(AlgorithmInformation.Elite == 0)
+            if (AlgorithmInformation.Elite == 0)
             {
                 AlgorithmInformation.Elite = 1;
             }
@@ -502,7 +502,7 @@ namespace ImageEvolution
             _tmpIndividual = null;
             _topGenerationIndividual = null;
             _bestOfAllIndividual = null;
-    }
+        }
 
         private void MutationAmountSlider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {

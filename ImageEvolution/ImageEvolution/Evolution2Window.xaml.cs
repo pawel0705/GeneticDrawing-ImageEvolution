@@ -15,8 +15,6 @@ using System.Windows.Threading;
 
 namespace ImageEvolution
 {
-
-
     public partial class Evolution2Window : UserControl
     {
         private class IndividualListData
