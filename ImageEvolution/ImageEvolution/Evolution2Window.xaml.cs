@@ -1,6 +1,7 @@
 ﻿using ImageEvolution.Model.Genetic.Evolution;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Text;
 using System.Windows;
 using System.Windows.Controls;
@@ -17,15 +18,6 @@ namespace ImageEvolution
 {
     public partial class Evolution2Window : UserControl
     {
-        private class IndividualListData
-        {
-            public int Individual { get; set; }
-
-            public string Fitness { get; set; }
-
-            public string IndividualDNA { get; set; }
-        }
-
         private MainWindow _mainWindow;
 
         public List<Individual> individualList;
@@ -70,7 +62,14 @@ namespace ImageEvolution
             individualList.Clear();
             lvIndividuals.ItemsSource = null;
 
-            individualList.AddRange(_mainWindow.evolutionWindow._community.GetListOfIndividuals());
+            if(_mainWindow.evolutionWindow.generateTwoParent)
+            {
+                individualList.AddRange(_mainWindow.evolutionWindow._community.GetListOfIndividuals());
+            }
+            else
+            {
+                individualList.Add(_mainWindow.evolutionWindow._oneIndividual._parentIndividual);
+            }
             
 
             int iterator = 0;
@@ -83,5 +82,40 @@ namespace ImageEvolution
 
             lvIndividuals.ItemsSource = individualListDatas;
         }
+
+        private void SaveDNAButton_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void SaveDNAToFile(object sender, RoutedEventArgs e)
+        {
+            BinaryWriter bw;
+
+            try
+            {
+                bw = new BinaryWriter(new FileStream("DNAdata", FileMode.Create));
+
+                bw.Write(individualListDatas.Count);
+
+                foreach(var dna in individualListDatas)
+                {
+                    bw.Write(dna.Individual);
+                    bw.Write(dna.Fitness);
+                    bw.Write(dna.IndividualDNA);
+                }
+
+                bw.Close();
+            }
+            catch(IOException ex)
+            {
+                MessageBox.Show("There was a problem writing the DNA to file.", "Unable to save!", MessageBoxButton.OK, MessageBoxImage.Error);
+
+                return;
+            }
+
+            MessageBox.Show("DNA saved to file.", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
+        }
+
     }
 }

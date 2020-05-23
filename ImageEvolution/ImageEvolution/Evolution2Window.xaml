@@ -31,7 +31,7 @@
 
 
                 <Button Content="Refresh DNA" Name="RefreshDNAButton" Width="130" HorizontalAlignment="Left" Margin="589,34,0,0" VerticalAlignment="Top" Click="PrintInformationIndividual"/>
-                <Button Content="Save DNA" Name="SaveDNAButton" Width="130" HorizontalAlignment="Left" Margin="589,96,0,0" VerticalAlignment="Top" Click="InsertOriginalImage"/>
+                <Button Content="Save DNA" Name="SaveDNAButton" Width="130" HorizontalAlignment="Left" Margin="589,96,0,0" VerticalAlignment="Top" Click="SaveDNAToFile"/>
             </Grid>
         </materialDesign:TransitioningContent>
     </Grid>

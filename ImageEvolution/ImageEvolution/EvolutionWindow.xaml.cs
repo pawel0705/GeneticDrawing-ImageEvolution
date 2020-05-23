@@ -11,6 +11,7 @@ using System.Windows.Threading;
 using System.IO;
 
 using static ImageEvolution.ImageOpener;
+using System.Collections.Generic;
 
 namespace ImageEvolution
 {
@@ -18,7 +19,9 @@ namespace ImageEvolution
     {
         private Bitmap _originalBitmap;
         internal TwoParentEvolution _community;
-        private SingleParentEvolution _oneIndividual;
+        internal SingleParentEvolution _oneIndividual;
+
+        private bool fileDNAloaded = false;
 
         private bool _generateButtonLock = false;
         private bool _stopButtonLock = false;
@@ -28,6 +31,8 @@ namespace ImageEvolution
 
         private int _seconds = 0;
         private int _minutes = 0;
+
+        private List<IndividualListData> individualListDatas;
 
         private Individual _tmpIndividual;
         private Individual _topGenerationIndividual;
@@ -214,6 +219,7 @@ namespace ImageEvolution
         private void EnableUI(bool enable)
         {
             InsertImageButton.IsEnabled = enable;
+            LoadDNAButton.IsEnabled = enable;
 
             circleCheckBox.IsEnabled = enable;
             pentagonCheckBox.IsEnabled = enable;
@@ -280,17 +286,31 @@ namespace ImageEvolution
 
                     EnableUI(false);
 
-                    if (twoParentRadio.IsChecked ?? false)
+                    if (fileDNAloaded == true)
                     {
-                        generateTwoParent = true;
-                        _community.InitializeEvolution(sourceColours);
+                        if(individualListDatas.Count == 1)
+                        {
+                            _oneIndividual.InitializeFromDNA(sourceColours, individualListDatas);
+   
+                        }
+                        else
+                        {
+                           
+                        }
                     }
                     else
                     {
-                        generateTwoParent = false;
-                        _oneIndividual.InitializeEvolution(sourceColours);
+                        if (twoParentRadio.IsChecked ?? false)
+                        {
+                            generateTwoParent = true;
+                            _community.InitializeEvolution(sourceColours);
+                        }
+                        else
+                        {
+                            generateTwoParent = false;
+                            _oneIndividual.InitializeEvolution(sourceColours);
+                        }
                     }
-
 
                     _evolutionInitialized = true;
                 }
@@ -507,6 +527,44 @@ namespace ImageEvolution
         private void MutationAmountSlider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
             AlgorithmInformation.MutationChance = (int)MutationAmountSlider.Value;
+        }
+
+        private void LoadDNAButtonClick(object sender, RoutedEventArgs e)
+        {
+            BinaryReader br;
+            individualListDatas = new List<IndividualListData>();
+            IndividualListData individualListData;
+
+            try
+            {
+                br = new BinaryReader(new FileStream("DNAdata", FileMode.Open));
+                
+
+                int individualsNr = br.ReadInt32();
+
+                for(int i = 0; i < individualsNr; i++)
+                {
+                    individualListData = new IndividualListData
+                    {
+                        Individual = br.ReadInt32(),
+                        Fitness = br.ReadString(),
+                        IndividualDNA = br.ReadString()
+                    };
+
+                    individualListDatas.Add(individualListData);
+                }
+
+                br.Close();
+
+                fileDNAloaded = true;
+            }
+            catch(IOException ex)
+            {
+                MessageBox.Show("There was a problem reading the DNA from file.", "Unable to read!", MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
+
+            MessageBox.Show("DNA read from file. Now instert original image.", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
         }
     }
 }

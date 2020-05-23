@@ -29,7 +29,7 @@
                 <Button Content="Generate" Name="GenerateButton" Width="130" HorizontalAlignment="Left" Margin="764,67,0,0" VerticalAlignment="Top" Click="Button_Click"/>
                 <Button Content="Stop" Name="StopButton" Width="130" HorizontalAlignment="Left" Margin="764,112,0,0" VerticalAlignment="Top" Click="StopButtonClicki"/>
                 <Button Content="Reset" Name="ResetButton" Width="130" HorizontalAlignment="Left" Margin="764,160,0,0" VerticalAlignment="Top" Click="ResetButtonClick"/>
-                <Button Content="Load DNA" Name="LoadDNAButton" Width="130" HorizontalAlignment="Left" Margin="764,209,0,0" VerticalAlignment="Top" Click="ResetButtonClick"/>
+                <Button Content="Load DNA" Name="LoadDNAButton" Width="130" HorizontalAlignment="Left" Margin="764,209,0,0" VerticalAlignment="Top" Click="LoadDNAButtonClick"/>
 
                 <StackPanel Orientation="Vertical" HorizontalAlignment="Left" VerticalAlignment="Top"/>
 

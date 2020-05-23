@@ -18,6 +18,9 @@ namespace ImageEvolution.Model.Genetic.Chromosome
         public ShapeChromosome(ShapeType shapeType)
         {
             _shapeType = shapeType;
+
+            PositionsShape = new List<PositionDNA>();
+            ColourShape = new ColourDNA();
         }
 
         public void InitializeDNA()

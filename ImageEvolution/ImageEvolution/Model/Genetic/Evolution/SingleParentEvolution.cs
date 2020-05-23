@@ -1,12 +1,24 @@
 ﻿using ImageEvolution.Model.Settings;
 using ImageEvolution.Model.Utils;
+using System.Collections.Generic;
 using System.Drawing;
 
 namespace ImageEvolution.Model.Genetic.Evolution
 {
     public class SingleParentEvolution : Evolution
     {
-        Individual _parentIndividual;
+        public Individual _parentIndividual { get; private set; }
+
+        public void InitializeFromDNA(Color[,] sourceIndividual, List<IndividualListData> individualData)
+        {
+            _parentIndividual = new Individual();
+
+            _parentIndividual.InitializeFromDNA(individualData[0]);
+
+            _destinationIndividual = sourceIndividual;
+
+            _evolutionFitness = new EvolutionFitness(AlgorithmInformation.ImageWidth, AlgorithmInformation.ImageHeight);
+        }
 
         public void InitializeEvolution(Color[,] sourceIndividual)
         {
@@ -78,6 +90,7 @@ namespace ImageEvolution.Model.Genetic.Evolution
             if (_parentIndividual.Adaptation < _childIndividual.Adaptation)
             {
                 _parentIndividual = _childIndividual.CloneIndividual();
+                _parentIndividual.CreateNewDNAString();
             }
             else
             {

@@ -25,6 +25,16 @@ namespace ImageEvolution.Model.Genetic.Evolution
 
         public void InitializeEvolution(Color[,] sourceIndividual)
         {
+            if(AlgorithmInformation.Population < 4)
+            {
+                AlgorithmInformation.Population = 4;
+            }
+
+            if(AlgorithmInformation.Elite < 2)
+            {
+                AlgorithmInformation.Elite = 2;
+            }
+
             _threads = new List<Thread>();
             _populationForThread = new int[AlgorithmInformation.GetOptimalThreadAmount()];
 
