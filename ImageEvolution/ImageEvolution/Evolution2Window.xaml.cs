@@ -1,10 +1,13 @@
 ﻿using ImageEvolution.Model.Genetic.Evolution;
+using ImageEvolution.ViewModel;
+using Prism.Mvvm;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Controls.DataVisualization.Charting;
 using System.Windows.Data;
 using System.Windows.Documents;
 using System.Windows.Input;
@@ -16,6 +19,8 @@ using System.Windows.Threading;
 
 namespace ImageEvolution
 {
+
+
     public partial class Evolution2Window : UserControl
     {
         private MainWindow _mainWindow;
@@ -62,7 +67,7 @@ namespace ImageEvolution
             individualList.Clear();
             lvIndividuals.ItemsSource = null;
 
-            if(_mainWindow.evolutionWindow.generateTwoParent)
+            if (_mainWindow.evolutionWindow.generateTwoParent)
             {
                 individualList.AddRange(_mainWindow.evolutionWindow._community.GetListOfIndividuals());
             }
@@ -70,7 +75,7 @@ namespace ImageEvolution
             {
                 individualList.Add(_mainWindow.evolutionWindow._oneIndividual._parentIndividual);
             }
-            
+
 
             int iterator = 0;
             foreach (var i in individualList)
@@ -98,7 +103,7 @@ namespace ImageEvolution
 
                 bw.Write(individualListDatas.Count);
 
-                foreach(var dna in individualListDatas)
+                foreach (var dna in individualListDatas)
                 {
                     bw.Write(dna.Individual);
                     bw.Write(dna.Fitness);
@@ -107,7 +112,7 @@ namespace ImageEvolution
 
                 bw.Close();
             }
-            catch(IOException ex)
+            catch (IOException ex)
             {
                 MessageBox.Show("There was a problem writing the DNA to file.", "Unable to save!", MessageBoxButton.OK, MessageBoxImage.Error);
 
@@ -117,5 +122,28 @@ namespace ImageEvolution
             MessageBox.Show("DNA saved to file.", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
         }
 
+        private void RefreshChartButtonClick(object sender, RoutedEventArgs e)
+        {
+
+            Chart dynamicChart = new Chart();
+            LineSeries lineseries = new LineSeries
+            {
+                ItemsSource = _mainWindow.evolutionWindow.dataChartList,
+                DependentValuePath = "Value",
+                IndependentValuePath = "Key",
+
+            };
+            dynamicChart.Series.Add(lineseries);
+
+            Style styleLegand = new Style { TargetType = typeof(Control) };
+            styleLegand.Setters.Add(new Setter(Control.WidthProperty, 0d));
+            styleLegand.Setters.Add(new Setter(Control.HeightProperty, 0d));
+
+
+
+            dynamicChart.LegendStyle = styleLegand;
+
+            GroupBoxDynamicChart.Content = dynamicChart;
+        }
     }
 }

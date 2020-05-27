@@ -14,10 +14,10 @@
         <materialDesign:TransitioningContent x:Name="TrainsitionigContentSlide" OpeningEffect="{materialDesign:TransitionEffect SlideInFromLeft, Duration=0:0:1.5}">
             <Grid>
                 <StackPanel Orientation="Horizontal"  Margin="0,0,0,345">
-                    <GroupBox Header="Original image"  Width="250" Height="250" Margin="0,0,0,0">
+                    <GroupBox Header="           Original image"  Width="250" Height="250" Margin="0,0,0,0">
                         <Image Name="originalImage" Width="200" Height="200"></Image>
                     </GroupBox>
-                    <GroupBox Header="Best of all individual" Width="250" Height="250" Margin="0,0,0,0">
+                    <GroupBox Header="       Best of all individual" Width="250" Height="250" Margin="0,0,0,0">
                         <Image Name="bestGeneticImage" Width="200" Height="200" />
                     </GroupBox>
                     <GroupBox Header="Top individual from generation" Width="250" Height="250" Margin="0,0,0,0">

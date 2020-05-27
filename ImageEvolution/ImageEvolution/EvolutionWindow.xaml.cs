@@ -12,6 +12,7 @@ using System.IO;
 
 using static ImageEvolution.ImageOpener;
 using System.Collections.Generic;
+using ImageEvolution.ViewModel;
 
 namespace ImageEvolution
 {
@@ -44,6 +45,8 @@ namespace ImageEvolution
 
         private Thread _generationThread;
 
+        internal List<ChartKeyValue> dataChartList;
+
         public bool generateTwoParent;
 
         public EvolutionWindow()
@@ -73,6 +76,8 @@ namespace ImageEvolution
             _oneIndividual.IndividualCreated += ShowDataImages;
 
             _tmpIndividual = new Individual();
+
+            dataChartList = new List<ChartKeyValue>();
         }
 
         private void InitializeTimers()
@@ -134,6 +139,8 @@ namespace ImageEvolution
                     {
                         _bestOfAllIndividual = _tmpIndividual.CloneIndividual();
                         _newBestIndividual = true;
+
+                        dataChartList.Add(new ChartKeyValue() { Key = _bestOfAllIndividual.Generation, Value = _bestOfAllIndividual.Adaptation });
                     }
 
                     _topGenerationIndividual = _tmpIndividual.CloneIndividual();
@@ -210,6 +217,8 @@ namespace ImageEvolution
 
                     this.bestGeneticImage.Source = bitmap1;
                     this.bestFitness.Content = "Best fitness: " + Math.Round(_bestOfAllIndividual.Adaptation, 2).ToString() + "%";
+
+                    
 
                     _newBestIndividual = false;
                 }

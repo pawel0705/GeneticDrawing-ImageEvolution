@@ -43,7 +43,7 @@ namespace ImageEvolution
         private void MoveCursorMenu(int index)
         {
             TrainsitionigContentSlide.OnApplyTemplate();
-            GridCursor.Margin = new Thickness(0, (50 + (60 * index)), 0, 0);
+            GridCursor.Margin = new Thickness(0, 315 * index, 0, 0);
         }
 
         private void Grid_MouseDown(object sender, MouseButtonEventArgs e)
@@ -53,6 +53,7 @@ namespace ImageEvolution
 
         private void SetDataBetweenWindows()
         {
+            /*
             evolution2Window.individualList.Clear();
 
             if (evolutionWindow.generateTwoParent)
@@ -62,6 +63,13 @@ namespace ImageEvolution
                     evolution2Window.individualList.Add(evolutionWindow._community._populationIndividuals[i]);
                 }
             }
+            else
+            {
+                evolution2Window.individualList.Add(evolutionWindow._oneIndividual._parentIndividual);
+            }
+
+            evolution2Window.UpdateChart(evolutionWindow.dataChartList);
+            */
         }
 
         private void ListViewMenu_SelectionChanged(object sender, SelectionChangedEventArgs e)
