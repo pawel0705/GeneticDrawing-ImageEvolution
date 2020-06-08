@@ -132,12 +132,10 @@ namespace ImageEvolution.Model.Genetic.Evolution
                 _eliteIndividuals[j] = _populationIndividuals[j].CloneIndividual();
             }
 
-
-            int i = 0;
             int mother = 0;
             int father = 1;
 
-            while (i < AlgorithmInformation.Population)
+            for (int i = 0; i < AlgorithmInformation.Population; i++)
             {
                 _populationIndividuals[i] = Reproduct(_eliteIndividuals[mother], _eliteIndividuals[father]);
 
@@ -151,12 +149,6 @@ namespace ImageEvolution.Model.Genetic.Evolution
                 if (father >= AlgorithmInformation.Elite)
                 {
                     father = 0;
-                }
-
-                i++;
-                if (i > AlgorithmInformation.Population)
-                {
-                    break;
                 }
             }
 
@@ -186,7 +178,7 @@ namespace ImageEvolution.Model.Genetic.Evolution
                 }
             }
 
-            Console.WriteLine(from + " " + to);
+         //   Console.WriteLine(from + " " + to);
         }
 
         private Individual Reproduct(Individual mother, Individual father)

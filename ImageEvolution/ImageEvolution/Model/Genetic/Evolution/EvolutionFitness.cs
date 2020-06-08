@@ -25,7 +25,7 @@ namespace ImageEvolution
 
         public unsafe void CompareImages(Individual individual, Color[,] originalColours)
         {
-            double d = 0;
+            double fitness = 0;
 
             using (Bitmap bit = new Bitmap(_imageWidth, _imageHeight, PixelFormat.Format24bppRgb))
             {
@@ -57,14 +57,14 @@ namespace ImageEvolution
                         byte gGreen = row[gIndex];
                         byte gBlue = row[bIndex];
 
-                        d += Math.Sqrt(Math.Pow(oRed - gRed, 2) + Math.Pow(oGreen - gGreen, 2) + Math.Pow(oBlue - gBlue, 2));
+                        fitness += Math.Sqrt(Math.Pow(oRed - gRed, 2) + Math.Pow(oGreen - gGreen, 2) + Math.Pow(oBlue - gBlue, 2));
                     }
                 }
 
                 bit.UnlockBits(bitmapData);
             }
 
-            individual.Adaptation = (_dMax - d) / _dMax * 100;
+            individual.Adaptation = (_dMax - fitness) / _dMax * 100;
         }
     }
 }

@@ -11,7 +11,7 @@
              Foreground="Purple"
              Height="600" Width="auto">
     <Grid>
-        <materialDesign:TransitioningContent x:Name="TrainsitionigContentSlide" OpeningEffect="{materialDesign:TransitionEffect SlideInFromLeft, Duration=0:0:1.5}">
+        <materialDesign:TransitioningContent x:Name="TrainsitionigContentSlide" OpeningEffect="{materialDesign:TransitionEffect FadeIn, Duration=0:0:1.5}">
             <Grid>
                 <StackPanel Orientation="Horizontal"  Margin="0,0,0,345">
                     <GroupBox Header="           Original image"  Width="250" Height="250" Margin="0,0,0,0">
@@ -52,7 +52,7 @@
                     <Label FontWeight="Bold" Foreground="MediumPurple" FontSize="12">Shapes</Label>
                     <DockPanel VerticalAlignment="Center" Margin="10">
                         <TextBox Name ="shapesAmountTextBox"  Text="{Binding ElementName=ShapesAmountSlider, Path=Value, UpdateSourceTrigger=PropertyChanged}" DockPanel.Dock="Right" TextAlignment="Right" Width="40" />
-                        <Slider Name="ShapesAmountSlider" Maximum="500"  TickFrequency="1" IsSnapToTickEnabled="True" Width="150" ValueChanged="ShapesAmountSlider_ValueChanged"/>
+                        <Slider Name="ShapesAmountSlider" Maximum="1000"  TickFrequency="1" IsSnapToTickEnabled="True" Width="150" ValueChanged="ShapesAmountSlider_ValueChanged"/>
                     </DockPanel>
 
                     <Label FontWeight="Bold" Foreground="MediumPurple" FontSize="12">Population</Label>
