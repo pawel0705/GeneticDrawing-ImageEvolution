@@ -604,7 +604,7 @@ namespace ImageEvolution
 
                 fileDNAloaded = true;
             }
-            catch(IOException ex)
+            catch (IOException ex)
             {
                 MessageBox.Show("There was a problem reading the DNA from file.", "Unable to read!", MessageBoxButton.OK, MessageBoxImage.Error);
                 return;

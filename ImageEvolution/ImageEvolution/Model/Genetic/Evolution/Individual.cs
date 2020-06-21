@@ -76,7 +76,7 @@ namespace ImageEvolution.Model.Genetic.Evolution
                     pentagon.PositionsShape[4].PositionX + " " + pentagon.PositionsShape[4].PositionY + " ");
             }
 
-            DNAstring.Append('X');
+            DNAstring.Append("XX");
         }
 
         public Individual CloneIndividual()
@@ -404,15 +404,281 @@ namespace ImageEvolution.Model.Genetic.Evolution
                         i++;
                         shapeChromosome.PositionsShape.Add(positionDNA);
 
-                        TriangleShapes.Add(shapeChromosome); // SQUARE
+                        SquareShapes.Add(shapeChromosome); // SQUARE
                     }
                 }
                 else if(DNAstring[i] == 'E')
                 {
+                    i++;
 
                     while (DNAstring[i] != 'P')
                     {
+                        shapeChromosome = new ShapeChromosome(ShapeType.CIRCLE);
+
+                        while (DNAstring[i] != ' ')
+                        {
+                            informationBuffer += DNAstring[i];
+                            i++;
+                        }
+
+
+                        shapeChromosome.ColourShape.RedColour = (byte)Int32.Parse(informationBuffer);
+                        informationBuffer = "";
                         i++;
+
+                        while (DNAstring[i] != ' ')
+                        {
+                            informationBuffer += DNAstring[i];
+                            i++;
+                        }
+
+                        shapeChromosome.ColourShape.GreenColour = (byte)Int32.Parse(informationBuffer);
+                        informationBuffer = "";
+                        i++;
+
+                        while (DNAstring[i] != ' ')
+                        {
+                            informationBuffer += DNAstring[i];
+                            i++;
+                        }
+
+                        shapeChromosome.ColourShape.BlueColour = (byte)Int32.Parse(informationBuffer);
+                        informationBuffer = "";
+                        i++;
+
+                        while (DNAstring[i] != ' ')
+                        {
+                            informationBuffer += DNAstring[i];
+                            i++;
+                        }
+
+                        shapeChromosome.ColourShape.AlphaColour = (byte)Int32.Parse(informationBuffer);
+                        informationBuffer = "";
+                        i++;
+
+
+                        positionDNA = new PositionDNA(); // 1
+
+                        while (DNAstring[i] != ' ')
+                        {
+                            informationBuffer += DNAstring[i];
+                            i++;
+                        }
+
+
+                        positionDNA.PositionX = Int32.Parse(informationBuffer);
+                        informationBuffer = "";
+                        i++;
+
+                        while (DNAstring[i] != ' ')
+                        {
+                            informationBuffer += DNAstring[i];
+                            i++;
+                        }
+
+                        positionDNA.PositionY = Int32.Parse(informationBuffer);
+                        informationBuffer = "";
+                        i++;
+                        shapeChromosome.PositionsShape.Add(positionDNA);
+
+                        positionDNA = new PositionDNA(); // 2
+
+                        while (DNAstring[i] != ' ')
+                        {
+                            informationBuffer += DNAstring[i];
+                            i++;
+                        }
+
+
+                        positionDNA.PositionX = Int32.Parse(informationBuffer);
+                        informationBuffer = "";
+                        i++;
+
+                        while (DNAstring[i] != ' ')
+                        {
+                            informationBuffer += DNAstring[i];
+                            i++;
+                        }
+
+                        positionDNA.PositionY = Int32.Parse(informationBuffer);
+                        informationBuffer = "";
+                        i++;
+                        shapeChromosome.PositionsShape.Add(positionDNA);
+
+                        ElipseShapes.Add(shapeChromosome); // ELIPSE
+                    }
+                }
+                else if(DNAstring[i] == 'P')
+                {
+                    i++;
+
+                    while (DNAstring[i] != 'X')
+                    {
+                        shapeChromosome = new ShapeChromosome(ShapeType.PENTAGON);
+
+                        while (DNAstring[i] != ' ')
+                        {
+                            informationBuffer += DNAstring[i];
+                            i++;
+                        }
+
+
+                        shapeChromosome.ColourShape.RedColour = (byte)Int32.Parse(informationBuffer);
+                        informationBuffer = "";
+                        i++;
+
+                        while (DNAstring[i] != ' ')
+                        {
+                            informationBuffer += DNAstring[i];
+                            i++;
+                        }
+
+                        shapeChromosome.ColourShape.GreenColour = (byte)Int32.Parse(informationBuffer);
+                        informationBuffer = "";
+                        i++;
+
+                        while (DNAstring[i] != ' ')
+                        {
+                            informationBuffer += DNAstring[i];
+                            i++;
+                        }
+
+                        shapeChromosome.ColourShape.BlueColour = (byte)Int32.Parse(informationBuffer);
+                        informationBuffer = "";
+                        i++;
+
+                        while (DNAstring[i] != ' ')
+                        {
+                            informationBuffer += DNAstring[i];
+                            i++;
+                        }
+
+                        shapeChromosome.ColourShape.AlphaColour = (byte)Int32.Parse(informationBuffer);
+                        informationBuffer = "";
+                        i++;
+
+
+                        positionDNA = new PositionDNA(); // 1
+
+                        while (DNAstring[i] != ' ')
+                        {
+                            informationBuffer += DNAstring[i];
+                            i++;
+                        }
+
+
+                        positionDNA.PositionX = Int32.Parse(informationBuffer);
+                        informationBuffer = "";
+                        i++;
+
+                        while (DNAstring[i] != ' ')
+                        {
+                            informationBuffer += DNAstring[i];
+                            i++;
+                        }
+
+                        positionDNA.PositionY = Int32.Parse(informationBuffer);
+                        informationBuffer = "";
+                        i++;
+                        shapeChromosome.PositionsShape.Add(positionDNA);
+
+                        positionDNA = new PositionDNA(); // 2
+
+                        while (DNAstring[i] != ' ')
+                        {
+                            informationBuffer += DNAstring[i];
+                            i++;
+                        }
+
+
+                        positionDNA.PositionX = Int32.Parse(informationBuffer);
+                        informationBuffer = "";
+                        i++;
+
+                        while (DNAstring[i] != ' ')
+                        {
+                            informationBuffer += DNAstring[i];
+                            i++;
+                        }
+
+                        positionDNA.PositionY = Int32.Parse(informationBuffer);
+                        informationBuffer = "";
+                        i++;
+                        shapeChromosome.PositionsShape.Add(positionDNA);
+
+                        positionDNA = new PositionDNA(); // 3
+
+                        while (DNAstring[i] != ' ')
+                        {
+                            informationBuffer += DNAstring[i];
+                            i++;
+                        }
+
+
+                        positionDNA.PositionX = Int32.Parse(informationBuffer);
+                        informationBuffer = "";
+                        i++;
+
+                        while (DNAstring[i] != ' ')
+                        {
+                            informationBuffer += DNAstring[i];
+                            i++;
+                        }
+
+                        positionDNA.PositionY = Int32.Parse(informationBuffer);
+                        informationBuffer = "";
+                        i++;
+                        shapeChromosome.PositionsShape.Add(positionDNA);
+
+                        positionDNA = new PositionDNA(); // 4
+
+                        while (DNAstring[i] != ' ')
+                        {
+                            informationBuffer += DNAstring[i];
+                            i++;
+                        }
+
+
+                        positionDNA.PositionX = Int32.Parse(informationBuffer);
+                        informationBuffer = "";
+                        i++;
+
+                        while (DNAstring[i] != ' ')
+                        {
+                            informationBuffer += DNAstring[i];
+                            i++;
+                        }
+
+                        positionDNA.PositionY = Int32.Parse(informationBuffer);
+                        informationBuffer = "";
+                        i++;
+                        shapeChromosome.PositionsShape.Add(positionDNA);
+
+                        positionDNA = new PositionDNA(); // 5
+
+                        while (DNAstring[i] != ' ')
+                        {
+                            informationBuffer += DNAstring[i];
+                            i++;
+                        }
+
+
+                        positionDNA.PositionX = Int32.Parse(informationBuffer);
+                        informationBuffer = "";
+                        i++;
+
+                        while (DNAstring[i] != ' ')
+                        {
+                            informationBuffer += DNAstring[i];
+                            i++;
+                        }
+
+                        positionDNA.PositionY = Int32.Parse(informationBuffer);
+                        informationBuffer = "";
+                        i++;
+                        shapeChromosome.PositionsShape.Add(positionDNA);
+
+                        PentagonShapes.Add(shapeChromosome); // PENTAGON
                     }
                 }
                 else if(DNAstring[i] == 'X')
