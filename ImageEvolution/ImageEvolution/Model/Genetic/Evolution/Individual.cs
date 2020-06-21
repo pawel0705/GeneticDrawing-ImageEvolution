@@ -130,7 +130,7 @@ namespace ImageEvolution.Model.Genetic.Evolution
 
             PositionDNA positionDNA;
 
-            for (int i = 0; i < DNAstring.Length; i++)
+            for (int i = 0; i < DNAstring.Length;)
             {
 
                 if (DNAstring[i] == 'T')
@@ -257,15 +257,154 @@ namespace ImageEvolution.Model.Genetic.Evolution
 
                         TriangleShapes.Add(shapeChromosome); // TRIANGLE
                     }
-
-
                 } 
                 else if (DNAstring[i] == 'S')
                 {
+                    i++;
 
                     while (DNAstring[i] != 'E')
                     {
+                        shapeChromosome = new ShapeChromosome(ShapeType.SQUARE);
+
+                        while (DNAstring[i] != ' ')
+                        {
+                            informationBuffer += DNAstring[i];
+                            i++;
+                        }
+
+
+                        shapeChromosome.ColourShape.RedColour = (byte)Int32.Parse(informationBuffer);
+                        informationBuffer = "";
                         i++;
+
+                        while (DNAstring[i] != ' ')
+                        {
+                            informationBuffer += DNAstring[i];
+                            i++;
+                        }
+
+                        shapeChromosome.ColourShape.GreenColour = (byte)Int32.Parse(informationBuffer);
+                        informationBuffer = "";
+                        i++;
+
+                        while (DNAstring[i] != ' ')
+                        {
+                            informationBuffer += DNAstring[i];
+                            i++;
+                        }
+
+                        shapeChromosome.ColourShape.BlueColour = (byte)Int32.Parse(informationBuffer);
+                        informationBuffer = "";
+                        i++;
+
+                        while (DNAstring[i] != ' ')
+                        {
+                            informationBuffer += DNAstring[i];
+                            i++;
+                        }
+
+                        shapeChromosome.ColourShape.AlphaColour = (byte)Int32.Parse(informationBuffer);
+                        informationBuffer = "";
+                        i++;
+
+
+                        positionDNA = new PositionDNA(); // 1
+
+                        while (DNAstring[i] != ' ')
+                        {
+                            informationBuffer += DNAstring[i];
+                            i++;
+                        }
+
+
+                        positionDNA.PositionX = Int32.Parse(informationBuffer);
+                        informationBuffer = "";
+                        i++;
+
+                        while (DNAstring[i] != ' ')
+                        {
+                            informationBuffer += DNAstring[i];
+                            i++;
+                        }
+
+                        positionDNA.PositionY = Int32.Parse(informationBuffer);
+                        informationBuffer = "";
+                        i++;
+                        shapeChromosome.PositionsShape.Add(positionDNA);
+
+                        positionDNA = new PositionDNA(); // 2
+
+                        while (DNAstring[i] != ' ')
+                        {
+                            informationBuffer += DNAstring[i];
+                            i++;
+                        }
+
+
+                        positionDNA.PositionX = Int32.Parse(informationBuffer);
+                        informationBuffer = "";
+                        i++;
+
+                        while (DNAstring[i] != ' ')
+                        {
+                            informationBuffer += DNAstring[i];
+                            i++;
+                        }
+
+                        positionDNA.PositionY = Int32.Parse(informationBuffer);
+                        informationBuffer = "";
+                        i++;
+                        shapeChromosome.PositionsShape.Add(positionDNA);
+
+                        positionDNA = new PositionDNA(); // 3
+
+                        while (DNAstring[i] != ' ')
+                        {
+                            informationBuffer += DNAstring[i];
+                            i++;
+                        }
+
+
+                        positionDNA.PositionX = Int32.Parse(informationBuffer);
+                        informationBuffer = "";
+                        i++;
+
+                        while (DNAstring[i] != ' ')
+                        {
+                            informationBuffer += DNAstring[i];
+                            i++;
+                        }
+
+                        positionDNA.PositionY = Int32.Parse(informationBuffer);
+                        informationBuffer = "";
+                        i++;
+                        shapeChromosome.PositionsShape.Add(positionDNA);
+
+                        positionDNA = new PositionDNA(); // 4
+
+                        while (DNAstring[i] != ' ')
+                        {
+                            informationBuffer += DNAstring[i];
+                            i++;
+                        }
+
+
+                        positionDNA.PositionX = Int32.Parse(informationBuffer);
+                        informationBuffer = "";
+                        i++;
+
+                        while (DNAstring[i] != ' ')
+                        {
+                            informationBuffer += DNAstring[i];
+                            i++;
+                        }
+
+                        positionDNA.PositionY = Int32.Parse(informationBuffer);
+                        informationBuffer = "";
+                        i++;
+                        shapeChromosome.PositionsShape.Add(positionDNA);
+
+                        TriangleShapes.Add(shapeChromosome); // SQUARE
                     }
                 }
                 else if(DNAstring[i] == 'E')
@@ -279,6 +418,10 @@ namespace ImageEvolution.Model.Genetic.Evolution
                 else if(DNAstring[i] == 'X')
                 {
                     return;
+                }
+                else
+                {
+                    i++;
                 }
             }
         }

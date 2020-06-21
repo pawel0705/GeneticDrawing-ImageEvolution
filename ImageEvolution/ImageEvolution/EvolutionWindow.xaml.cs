@@ -260,6 +260,43 @@ namespace ImageEvolution
 
         private void Button_Click(object sender, RoutedEventArgs e)
         {
+            if(!(circleCheckBox.IsChecked ?? false) && !(pentagonCheckBox.IsChecked ?? false) && 
+                !(rectangleCheckBox.IsChecked ?? false) && !(triangleCheckBox.IsChecked ?? false))
+            {
+                MessageBox.Show("You must select at least one type of shape!", "No shape selected", MessageBoxButton.OK, MessageBoxImage.Information);
+
+                return;
+            }
+
+            if(originalImage.Source == null)
+            {
+                MessageBox.Show("You must first insert an image!", "No image selected", MessageBoxButton.OK, MessageBoxImage.Information);
+
+                return;
+            }
+
+            if(!(mutationDynamicRadio.IsChecked ?? false) && !(mutationStaticRadio.IsChecked ?? false))
+            {
+                MessageBox.Show("Choose chance of mutation type!", "Missing informations", MessageBoxButton.OK, MessageBoxImage.Information);
+
+                return;
+            }
+
+            if (!(mutationSoftRadio.IsChecked ?? false) && !(mutationMediumRadio.IsChecked ?? false) && 
+                !(mutationHardRadio.IsChecked ?? false) && !(mutationGaussianRadio.IsChecked ?? false))
+            {
+                MessageBox.Show("Choose the type of mutation!", "Missing informations", MessageBoxButton.OK, MessageBoxImage.Information);
+
+                return;
+            }
+
+            if (!(singleParentRadio.IsChecked ?? false) && !(twoParentRadio.IsChecked ?? false))
+            {
+                MessageBox.Show("Choose the type of algorithm!", "Missing informations", MessageBoxButton.OK, MessageBoxImage.Information);
+
+                return;
+            }
+
             if (_generateButtonLock == false)
             {
                 if (_evolutionInitialized == false)
