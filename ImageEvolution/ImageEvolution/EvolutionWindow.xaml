@@ -25,12 +25,14 @@
                     </GroupBox>
                 </StackPanel>
 
-                <Button Content="Instert image" Name="InsertImageButton" Width="130" HorizontalAlignment="Left" Margin="764,19,0,0" VerticalAlignment="Top" Click="InsertOriginalImage"/>
-                <Button Content="Generate" Name="GenerateButton" Width="130" HorizontalAlignment="Left" Margin="764,67,0,0" VerticalAlignment="Top" Click="Button_Click"/>
-                <Button Content="Stop" Name="StopButton" Width="130" HorizontalAlignment="Left" Margin="764,112,0,0" VerticalAlignment="Top" Click="StopButtonClicki"/>
-                <Button Content="Reset" Name="ResetButton" Width="130" HorizontalAlignment="Left" Margin="764,160,0,0" VerticalAlignment="Top" Click="ResetButtonClick"/>
-                <Button Content="Load DNA" Name="LoadDNAButton" Width="130" HorizontalAlignment="Left" Margin="764,209,0,0" VerticalAlignment="Top" Click="LoadDNAButtonClick"/>
+                <Button Content="Instert image" Name="InsertImageButton" Width="130" HorizontalAlignment="Left" Margin="764,5,0,0" VerticalAlignment="Top" Click="InsertOriginalImage"/>
+                <Button Content="Generate" Name="GenerateButton" Width="130" HorizontalAlignment="Left" Margin="764,50,0,0" VerticalAlignment="Top" Click="Button_Click"/>
+                <Button Content="Stop" Name="StopButton" Width="130" HorizontalAlignment="Left" Margin="764,96,0,0" VerticalAlignment="Top" Click="StopButtonClicki"/>
+                <Button Content="Reset" Name="ResetButton" Width="130" HorizontalAlignment="Left" Margin="764,142,0,0" VerticalAlignment="Top" Click="ResetButtonClick"/>
+                <Button Content="Load DNA" Name="LoadDNAButton" Width="130" HorizontalAlignment="Left" Margin="764,187,0,0" VerticalAlignment="Top" Click="LoadDNAButtonClick"/>
 
+                <Label Name="DNAfileInformation" Foreground="Purple" FontSize="12" Margin="769,224,5,344">DNA not loaded</Label>
+                
                 <StackPanel Orientation="Vertical" HorizontalAlignment="Left" VerticalAlignment="Top"/>
 
                 <StackPanel Orientation="Vertical" HorizontalAlignment="Left"  Margin="624,263,0,0" Height="325" VerticalAlignment="Top">

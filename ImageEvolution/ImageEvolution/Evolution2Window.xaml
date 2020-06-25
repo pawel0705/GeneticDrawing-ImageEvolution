@@ -33,7 +33,7 @@
                 </StackPanel>
 
                 <Label Foreground="Purple" Content="Adaptation (%)"  HorizontalAlignment="Left" FontSize="20" Margin="202,300,0,258"/>
-                <Label Foreground="Purple" Content="Generation"  HorizontalAlignment="Left" FontSize="20" Margin="648,548,0,10"/>
+                <Label Foreground="Purple" Content="Generation"  HorizontalAlignment="Left" FontSize="20" Margin="648,561,0,10"/>
 
                 <Grid Margin="177,252,0,0">
                     <Grid.ColumnDefinitions>
@@ -48,10 +48,10 @@
                     <GroupBox Header="                                    Top individual adaptation chart" x:Name="GroupBoxDynamicChart" Grid.RowSpan="2" Grid.ColumnSpan="2"/>
                 </Grid>
 
-                <Button Content="Refresh DNA" Name="RefreshDNAButton" Width="130" HorizontalAlignment="Left" Margin="10,268,0,0" VerticalAlignment="Top" Click="PrintInformationIndividual"/>
-                <Button Content="Refresh Chart" Name="RefreshChartButton" Width="130" HorizontalAlignment="Left" Margin="10,321,0,0" VerticalAlignment="Top" Click="RefreshChartButtonClick"/>
-                <Button Content="Save DNA" Name="SaveDNAButton" Width="130" HorizontalAlignment="Left" Margin="10,377,0,0" VerticalAlignment="Top" Click="SaveDNAToFile"/>
-                <Button Content="Save Data" Name="SaveGraphDataButton" Width="130" HorizontalAlignment="Left" Margin="10,439,0,0" VerticalAlignment="Top" Click="SaveGraphDataToFile"/>
+                <Button Content="Refresh DNA" Name="RefreshDNAButton" Width="130" HorizontalAlignment="Left" Margin="20,268,0,0" VerticalAlignment="Top" Click="PrintInformationIndividual"/>
+                <Button Content="Refresh Chart" Name="RefreshChartButton" Width="130" HorizontalAlignment="Left" Margin="20,483,0,0" VerticalAlignment="Top" Click="RefreshChartButtonClick"/>
+                <Button Content="Save DNA" Name="SaveDNAButton" Width="130" HorizontalAlignment="Left" Margin="20,310,0,0" VerticalAlignment="Top" Click="SaveDNAToFile"/>
+                <Button Content="Save Data" Name="SaveGraphDataButton" Width="130" HorizontalAlignment="Left" Margin="20,528,0,0" VerticalAlignment="Top" Click="SaveGraphDataToFile"/>
             </Grid>
         </materialDesign:TransitioningContent>
     </Grid>

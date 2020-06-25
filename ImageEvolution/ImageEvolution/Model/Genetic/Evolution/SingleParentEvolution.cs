@@ -9,7 +9,7 @@ namespace ImageEvolution.Model.Genetic.Evolution
     {
         public Individual _parentIndividual { get; private set; }
 
-        public void InitializeFromDNA(Color[,] sourceIndividual, List<IndividualListData> individualData)
+        public void InitializeFromDNA(Color[,] sourceIndividual, List<IndividualListData> individualData, int generation)
         {
             _parentIndividual = new Individual();
 
@@ -18,6 +18,8 @@ namespace ImageEvolution.Model.Genetic.Evolution
             _destinationIndividual = sourceIndividual;
 
             _evolutionFitness = new EvolutionFitness(AlgorithmInformation.ImageWidth, AlgorithmInformation.ImageHeight);
+
+            this._generation = generation;
         }
 
         public void InitializeEvolution(Color[,] sourceIndividual)

@@ -13,6 +13,7 @@ using System.IO;
 using static ImageEvolution.ImageOpener;
 using System.Collections.Generic;
 using ImageEvolution.ViewModel;
+using System.Text;
 
 namespace ImageEvolution
 {
@@ -22,6 +23,8 @@ namespace ImageEvolution
         internal TwoParentEvolution _community;
         internal SingleParentEvolution _oneIndividual;
 
+        internal bool algorithmStarted = false;
+
         private bool fileDNAloaded = false;
 
         private bool _generateButtonLock = false;
@@ -30,8 +33,19 @@ namespace ImageEvolution
         private bool _newBestIndividual = false;
         private bool _evolutionInitialized = false;
 
-        private int _seconds = 0;
-        private int _minutes = 0;
+        internal int _seconds = 0;
+        internal int _minutes = 0;
+
+        internal int _generation = 0;
+        internal int _killedChilds = 0;
+        internal double _bestFitness = 0;
+        internal double _currentFitness = 0;
+        internal int _mutationChance = 0;
+        internal int _dunamicMutation = 0;
+        internal int _mutationType = 0;
+        internal int _shapesAmount = 0;
+
+        private bool dnaLoaded = false;
 
         private List<IndividualListData> individualListDatas;
 
@@ -173,6 +187,13 @@ namespace ImageEvolution
                 stream.Close();
                 stream.Dispose();
 
+                _generation = _topGenerationIndividual.Generation;
+                _killedChilds = AlgorithmInformation.KilledChilds;
+                this._bestFitness = Math.Round(_bestOfAllIndividual.Adaptation, 2);
+                this._currentFitness = Math.Round(_topGenerationIndividual.Adaptation, 2);
+                this._mutationChance = AlgorithmInformation.MutationChance;
+                this._mutationType = (int)AlgorithmInformation.MutationType;
+
 
                 this.actualGeneticImage.Source = bitmap;
                 this.generation.Content = "Generation: " + _topGenerationIndividual.Generation.ToString();
@@ -183,14 +204,17 @@ namespace ImageEvolution
                 this.mutationChanceLabel.Content = "Mutation chance: " + AlgorithmInformation.MutationChance.ToString() + "%";
                 this.killedChildsLabel.Content = "Killed childs: " + AlgorithmInformation.KilledChilds;
 
+                _shapesAmount = (int)this.ShapesAmountSlider.Value;
 
                 if (this.mutationDynamicRadio.IsChecked ?? false)
                 {
                     this.dinamicallyMutationLabel.Content = "Dynamic mutation: YES";
+                    this._dunamicMutation = 1;
                 }
                 else
                 {
                     this.dinamicallyMutationLabel.Content = "Dynamic mutation: NO";
+                    this._dunamicMutation = 0;
                 }
 
                 if (this.twoParentRadio.IsChecked ?? false)
@@ -218,7 +242,7 @@ namespace ImageEvolution
                     this.bestGeneticImage.Source = bitmap1;
                     this.bestFitness.Content = "Best fitness: " + Math.Round(_bestOfAllIndividual.Adaptation, 2).ToString() + "%";
 
-                    
+
 
                     _newBestIndividual = false;
                 }
@@ -260,41 +284,47 @@ namespace ImageEvolution
 
         private void Button_Click(object sender, RoutedEventArgs e)
         {
-            if(!(circleCheckBox.IsChecked ?? false) && !(pentagonCheckBox.IsChecked ?? false) && 
-                !(rectangleCheckBox.IsChecked ?? false) && !(triangleCheckBox.IsChecked ?? false))
+            if (!dnaLoaded)
             {
-                MessageBox.Show("You must select at least one type of shape!", "No shape selected", MessageBoxButton.OK, MessageBoxImage.Information);
 
-                return;
-            }
 
-            if(originalImage.Source == null)
-            {
-                MessageBox.Show("You must first insert an image!", "No image selected", MessageBoxButton.OK, MessageBoxImage.Information);
+                if (!(circleCheckBox.IsChecked ?? false) && !(pentagonCheckBox.IsChecked ?? false) &&
+                    !(rectangleCheckBox.IsChecked ?? false) && !(triangleCheckBox.IsChecked ?? false))
+                {
+                    MessageBox.Show("You must select at least one type of shape!", "No shape selected", MessageBoxButton.OK, MessageBoxImage.Information);
 
-                return;
-            }
+                    return;
+                }
 
-            if(!(mutationDynamicRadio.IsChecked ?? false) && !(mutationStaticRadio.IsChecked ?? false))
-            {
-                MessageBox.Show("Choose chance of mutation type!", "Missing informations", MessageBoxButton.OK, MessageBoxImage.Information);
+                if (originalImage.Source == null)
+                {
+                    MessageBox.Show("You must first insert an image!", "No image selected", MessageBoxButton.OK, MessageBoxImage.Information);
 
-                return;
-            }
+                    return;
+                }
 
-            if (!(mutationSoftRadio.IsChecked ?? false) && !(mutationMediumRadio.IsChecked ?? false) && 
-                !(mutationHardRadio.IsChecked ?? false) && !(mutationGaussianRadio.IsChecked ?? false))
-            {
-                MessageBox.Show("Choose the type of mutation!", "Missing informations", MessageBoxButton.OK, MessageBoxImage.Information);
+                if (!(mutationDynamicRadio.IsChecked ?? false) && !(mutationStaticRadio.IsChecked ?? false))
+                {
+                    MessageBox.Show("Choose chance of mutation type!", "Missing informations", MessageBoxButton.OK, MessageBoxImage.Information);
 
-                return;
-            }
+                    return;
+                }
 
-            if (!(singleParentRadio.IsChecked ?? false) && !(twoParentRadio.IsChecked ?? false))
-            {
-                MessageBox.Show("Choose the type of algorithm!", "Missing informations", MessageBoxButton.OK, MessageBoxImage.Information);
+                if (!(mutationSoftRadio.IsChecked ?? false) && !(mutationMediumRadio.IsChecked ?? false) &&
+                    !(mutationHardRadio.IsChecked ?? false) && !(mutationGaussianRadio.IsChecked ?? false))
+                {
+                    MessageBox.Show("Choose the type of mutation!", "Missing informations", MessageBoxButton.OK, MessageBoxImage.Information);
 
-                return;
+                    return;
+                }
+
+                if (!(singleParentRadio.IsChecked ?? false) && !(twoParentRadio.IsChecked ?? false))
+                {
+                    MessageBox.Show("Choose the type of algorithm!", "Missing informations", MessageBoxButton.OK, MessageBoxImage.Information);
+
+                    return;
+                }
+
             }
 
             if (_generateButtonLock == false)
@@ -334,15 +364,13 @@ namespace ImageEvolution
 
                     if (fileDNAloaded == true)
                     {
+                        _oneIndividual.InitializeFromDNA(sourceColours, individualListDatas, _generation);
+                        /*
                         if(individualListDatas.Count == 1)
                         {
                             _oneIndividual.InitializeFromDNA(sourceColours, individualListDatas);
-   
                         }
-                        else
-                        {
-                           
-                        }
+                        */
                     }
                     else
                     {
@@ -360,6 +388,8 @@ namespace ImageEvolution
 
                     _evolutionInitialized = true;
                 }
+
+                this.algorithmStarted = true;
 
                 this.GenerateButton.IsEnabled = false;
                 _generateButtonLock = true;
@@ -499,7 +529,7 @@ namespace ImageEvolution
             }
         }
 
-        private void ResetButtonClick(object sender, RoutedEventArgs e)
+        private void ResetApp()
         {
             _stopButtonLock = true;
             StopButton.IsEnabled = false;
@@ -509,6 +539,8 @@ namespace ImageEvolution
 
             RemoveThread();
             EnableUI(true);
+
+            this.algorithmStarted = false;
 
             this.actualGeneticImage.Source = null;
             this.bestGeneticImage.Source = null;
@@ -528,6 +560,13 @@ namespace ImageEvolution
             this._seconds = 0;
             this._minutes = 0;
             this.elapsedTime.Content = "Elapsed time: 0:00";
+
+            this._generation = 0;
+            this._bestFitness = 0;
+            this._currentFitness = 0;
+            this._mutationChance = 0;
+            this._dunamicMutation = 0;
+            this._mutationType = 0;
 
             this._originalBitmap = null;
 
@@ -568,6 +607,15 @@ namespace ImageEvolution
             _tmpIndividual = null;
             _topGenerationIndividual = null;
             _bestOfAllIndividual = null;
+
+            dnaLoaded = false;
+            fileDNAloaded = false;
+            this.DNAfileInformation.Content = "DNA not loaded";
+        }
+
+        private void ResetButtonClick(object sender, RoutedEventArgs e)
+        {
+            ResetApp();
         }
 
         private void MutationAmountSlider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
@@ -580,15 +628,14 @@ namespace ImageEvolution
             BinaryReader br;
             individualListDatas = new List<IndividualListData>();
             IndividualListData individualListData;
-
             try
             {
                 br = new BinaryReader(new FileStream("DNAdata", FileMode.Open));
-                
+
 
                 int individualsNr = br.ReadInt32();
 
-                for(int i = 0; i < individualsNr; i++)
+                for (int i = 0; i < individualsNr; i++)
                 {
                     individualListData = new IndividualListData
                     {
@@ -602,10 +649,76 @@ namespace ImageEvolution
 
                 br.Close();
 
+                BinaryReader br2;
+                br2 = new BinaryReader(new FileStream("DNAdataInfo", FileMode.Open));
+
+                _minutes = br2.ReadInt32();
+                _seconds = br2.ReadInt32();
+                _generation = br2.ReadInt32();
+                _killedChilds = br2.ReadInt32();
+                _bestFitness = br2.ReadDouble();
+                _currentFitness = br2.ReadDouble();
+                _mutationChance = br2.ReadInt32();
+                _dunamicMutation = br2.ReadInt32();
+                _mutationType = br2.ReadInt32();
+                _shapesAmount = br2.ReadInt32();
+
+                AlgorithmInformation.KilledChilds = _killedChilds;
+                AlgorithmInformation.MutationChance = _mutationChance;
+                AlgorithmInformation.MutationType = (MutationType)_mutationType;
+
+                if (_dunamicMutation == 1)
+                {
+                    AlgorithmInformation.DynamicMutation = true;
+                }
+                else
+                {
+                    AlgorithmInformation.DynamicMutation = false;
+                }
+
+                this.generation.Content = "Generation: " + _generation;
+                this.currentFitness.Content = "Current fitness: " + _currentFitness + "%";
+                this.populationLabel.Content = "Population: 1";
+                this.eliteLabel.Content = "Elite: 1";
+                this.mutationTypeLabel.Content = "Mutation type: " + AlgorithmInformation.MutationType.ToString();
+                this.mutationChanceLabel.Content = "Mutation chance: " + AlgorithmInformation.MutationChance.ToString() + "%";
+                this.killedChildsLabel.Content = "Killed childs: " + AlgorithmInformation.KilledChilds;
+
+                if (_dunamicMutation == 1)
+                {
+
+                    this.dinamicallyMutationLabel.Content = "Dynamic mutation: YES";
+                }
+                else
+                {
+                    this.dinamicallyMutationLabel.Content = "Dynamic mutation: NO";
+                }
+
+                this.reproductionTypeLabel.Content = "Reproduction: Single-parent";
+                this.bestFitness.Content = "Best fitness: " + _bestFitness;
+
+                PopulationAmountSlider.Value = 1;
+                EliteAmountSlider.Value = 1;
+                ShapesAmountSlider.Value = _shapesAmount;
+                MutationAmountSlider.Value = _mutationChance;
+
+                this.elapsedTime.Content = "Elapsed time: " + _minutes + ":" + _seconds;
+
+                EnableUI(false);
+
+                br2.Close();
+
+                dnaLoaded = true;
                 fileDNAloaded = true;
+
+                InsertImageButton.IsEnabled = true;
+
+                this.DNAfileInformation.Content = "DNA loaded!";
             }
-            catch (IOException ex)
+            catch (IOException)
             {
+                ResetApp();
+
                 MessageBox.Show("There was a problem reading the DNA from file.", "Unable to read!", MessageBoxButton.OK, MessageBoxImage.Error);
                 return;
             }
